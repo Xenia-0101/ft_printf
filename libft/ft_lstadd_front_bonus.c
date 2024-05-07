@@ -1,38 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strchr.c                                        :+:      :+:    :+:   */
+/*   ft_lstadd_front_bonus.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/01 09:54:09 by xvislock          #+#    #+#             */
-/*   Updated: 2024/05/01 09:54:09 by xvislock         ###   ########.fr       */
+/*   Created: 2024/04/24 19:10:00 by xvislock          #+#    #+#             */
+/*   Updated: 2024/04/24 19:10:00 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
+/*
+	Parameters
+		lst: The address of a pointer to the first link of
+		a list.
+		new: The address of a pointer to the node to be
+		added to the list.
 
-static int	ft_strlen(char *str);
+	Return value
+		None
 
-char	*ft_strchr(const char *s, int c)
+	External functs.
+		None
+
+	Description
+		Adds the node ’new’ at the beginning of the list.
+*/
+
+#include "libft.h"
+
+void	ft_lstadd_front(t_list **lst, t_list *new)
 {
-	if (c == '\0')
-		return ((char *)s + ft_strlen((char *)s));
-	while (*s)
-	{
-		if (*s == c)
-			return ((char *)s);
-		s++;
-	}
-	return (NULL);
-}
-
-static int	ft_strlen(char *str)
-{
-	int	count;
-
-	count = 0;
-	while (*str++)
-		count++;
-	return (count);
+	if (!lst || !new)
+		return ;
+	new->next = (*lst);
+	*lst = new;
 }

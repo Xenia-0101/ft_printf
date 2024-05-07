@@ -60,7 +60,7 @@ int	sum(int n, ...)
 	return total;
 }
 
-int	main(void)
+/* int	main(void)
 {
 	int	a = 5;
 	int	b = 10;
@@ -70,7 +70,7 @@ int	main(void)
 	res = sum(3, a, b, c);
 	printf("The sum of %d, %d and %d is %d\n", a, b, c, res);
 	return (0);
-}
+} */
 
 
 

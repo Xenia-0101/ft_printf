@@ -155,7 +155,7 @@ void test_printf(void)
 }
 
 
-int main(int argc, char **argv)
+/* int main(int argc, char **argv)
 {
 	// var_function(argc, argv);
 	// test_printf();
@@ -163,3 +163,4 @@ int main(int argc, char **argv)
 
 	return (0);
 }
+ */

@@ -10,134 +10,53 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdarg.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <unistd.h>
+// create a function which accepts a string and (...) and loops through the string,
+// determinig if a char is a modifier or not
+//
+// if a modifier is found, loop until specifier is found
+// call function which determines the format
+// print (...)
 
-static int	ft_strlen(char *str);
-static char	*ft_strchr(const char *s, int c);
+#include <libft.h>
+#include "../includes/ft_printf.h"
 
-size_t specs_count_util(const char *format)
+int is_specifier(char c)
 {
-	size_t count;
+	char	*specs = "cspdiuxX";
+	int		i;
 
-	count = 0;
-	while (*format)
+	i = 0;
+	while (i < 8)
 	{
-		if (*format == '%')
-		{
-			count++;
-			format++;
-			if (*format == '%')
-				format++;			// skip if %% is found
-		}
-		format++;
+		if (c == specs[i++])
+			return (1);
 	}
-	return (count);
-}
-
-void ft_putstr(char *str)
-{
-	while (*str)
-		write(1, str++, 1);
-}
-
-void ft_putnbr(int n)
-{
-	char c;
-
-	if (n > 0)
-	{
-		ft_putnbr(n / 10);
-		c = n % 10 + '0';
-		write(1, &c, 1);
-	}
-}
-
-const char *write_by_mod(va_list *specs_list, const char *format, int count)
-{
-	char	*specs_str;
-	char	specs_char;
-	int		specs_val;
-	char	modifier;
-
-	format = ft_strchr(format, '%');
-	modifier = *(format + 1);
-		// get modifier from format
-		// function to determine printf based on modifier
-		if (modifier == 's')
-		{
-			specs_str = va_arg(*specs_list, char *);
-			ft_putstr(specs_str);
-			return (format + 2);
-		}
-		else if (modifier == 'd')
-		{
-			specs_val = va_arg(*specs_list, int);
-			ft_putnbr(specs_val);
-			return (format + 2);
-		}
-		else if (modifier == '%')
-		{
-			specs_char = va_arg(*specs_list, int);
-			printf("%c", specs_char);
-			return (format + 1);
-		}
-}
-
-void write_string(va_list *specs_list, const char *format, int count)
-{
-	while (*format)
-	{
-		if (*format == '%')
-		{
-			format = write_by_mod(specs_list, format, count);
-		}
-		write(1, format, 1);
-		format++;
-		if (!format)
-			return ;
-	}
-}
-
-void ft_printf(const char *format, ...)
-{
-	va_list	specs_list;
-	size_t	specs_count;
-
-	specs_count = specs_count_util(format);
-	va_start(specs_list, format);
-	write_string(&specs_list, format, specs_count);
-	va_end(specs_list);
-}
-
-int main(void)
-{
-	ft_printf("Hello %s, today is %d of April, %d, %%.", "Fero", 30, 2024);
-
 	return (0);
 }
 
-static char	*ft_strchr(const char *s, int c)
+char *record_modifier(char **string)
 {
-	if (c == '\0')
-		return ((char *)s + ft_strlen((char *)s));
-	while (*s)
-	{
-		if (*s == c)
-			return ((char *)s);
-		s++;
-	}
-	return (NULL);
+	char	*start;
+	int		n;
+
+	start = ft_strchr(*string, '%');
+	if (start == NULL)
+		return (NULL);
+	else if (*(++start) == '%')
+		write(1,"\x1b[1;31m%\t", 9);
+
 }
 
-static int	ft_strlen(char *str)
+void ft_printf(char *string, char *var_1, char *var_2)
 {
-	int	count;
+	// get modifiers
+	record_modifier(&string);
 
-	count = 0;
-	while (*str++)
-		count++;
-	return (count);
+}
+
+int	main(void)
+{
+	ft_printf("Hello %s, the answer is %-15d.\n", "You", "42");
+
+	return (0);
 }
