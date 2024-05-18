@@ -137,14 +137,14 @@ int record_modifier(t_mod *mod, char *string)
 		mod_len++;
 		n++;
 	}
-	printf("\nchars in modifier: %d\n", mod_len);
+	// printf("\nchars in modifier: %d\n", mod_len);
 	modifier = ft_calloc(mod_len, sizeof (char));
 	n = mod_len;
 	while (n > 0)
 	{
 		modifier[n] = start[n--];
 	}
-	printf("modifier: %s\n", modifier);
+	// printf("modifier: %s\n", modifier);
 	// analyse modifier
 	analyse_mod(mod, modifier);
 
@@ -168,10 +168,10 @@ void format_d(t_mod *mod, va_list *vars)
 
 	num = va_arg(*vars, int);
 	num_len = ft_countnbr(num, 0);
-	printf("Printing num %d which has %d digits\n", num, num_len);
+	// printf("Printing num %d which has %d digits\n", num, num_len);
 	if (mod->widt.is_on && mod->widt.value > num_len)
 		num_len = mod->widt.value;
-	write(1, "Start>", 6);
+	// write(1, "Start>", 6);
 	if (mod->flag.is_on)
 	{
 		if (mod->flag.value == '0')
@@ -190,15 +190,37 @@ void format_d(t_mod *mod, va_list *vars)
 		pad_space(num_len - ft_countnbr(num, 0), ' ');
 		ft_putnbr_fd(num, 1);
 	}
-	write(1, "<End \n", 6);
+	// write(1, "<End \n", 6);
 }
 
 void format_s(t_mod *mod, va_list *vars)
 {
 	char *s;
+	int s_len;
 
 	s = va_arg(*vars, char *);
-	printf("Printign string %s\n", s);
+	s_len = ft_strlen(s);
+	if (mod->widt.is_on && mod->widt.value > s_len)
+		s_len = mod->widt.value;
+	// write(1, "Start>", 6);
+	if (mod->flag.is_on)
+	{
+		if (mod->flag.value == '-')
+		{
+			write(1, s, ft_strlen(s));
+			pad_space(s_len - ft_strlen(s), ' ');
+		}
+		else
+		{
+			pad_space(s_len - ft_strlen(s), ' ');
+			write(1, s, ft_strlen(s));
+		}
+	}
+	else
+	{
+		write(1, s, ft_strlen(s));
+	}
+	// write(1, "<End \n", 6);
 }
 
 void format_variable(t_mod *mod, va_list *vars)
@@ -242,8 +264,8 @@ void ft_printf(char *string, ...)
 	char *buff_2;
 
 	va_start(vars, string);
-	printf("The first param: %s\n", string);
-	printf("%15d\n", 42);
+	// printf("The first param: %s\n", string);
+	// printf("%15d\n", 42);
 
 	n = 0;
 	while (string[n])
@@ -261,10 +283,10 @@ void ft_printf(char *string, ...)
 				// get var
 				// write var
 				init_mod(&mod);
-				n += record_modifier(&mod, (string + n));
+				n += record_modifier(&mod, (string + n)) + 1;
 				format_variable(&mod, &vars);
 
-				print_mod(&mod);
+				// print_mod(&mod);
 			}
 		}
 		else

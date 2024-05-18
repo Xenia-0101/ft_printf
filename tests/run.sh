@@ -6,9 +6,10 @@ clear
 
 cd ../
 make all
+# make clean
 
 cd tests/
 # clear
 
-cc -g main.c ../ft_printf.o ../libft/libft.a
+cc -g main.c ../ft_printf.c ../libft/libft.a
 ./a.out
