@@ -1,5 +1,8 @@
-SRCS_DIR	:=		./srcs/
-SOURCES		:=		$(shell find $(SRCS_DIR) -name '*.c')
+
+# SOURCES		:=		$(shell find . -name '*.c')
+SOURCES		= \
+ft_printf.c \
+
 OBJECTS		=		$(SOURCES:.c=.o)
 HEADER		=		includes
 LIBFT		=		libft
@@ -9,29 +12,27 @@ RM			=		rm -f
 CC			=		gcc
 AR			=		ar rc
 
-all:	${NAME} 
+all:	${NAME}
 
 ${NAME}: ${OBJECTS}
-	@make -C $(LIBFT)
-	@cp libft/libft.a .
-	@mv libft.a $(NAME)
-	@ranlib $(NAME)
+	make -C $(LIBFT)
+	cp libft/libft.a ./
+	mv libft.a $(NAME)
+	${AR} ${NAME} ${OBJECTS}
+	echo ${OBJECTS}
 
-${NAME}: main.o
-	${CC} ${FLAGS} main.o -o ${NAME} -L. -lftprintf -I${HEADER}
-
-main.o: main.c
-	${CC} ${FLAGS} -c main.c -o main.o -I${HEADER}
+.c.o:
+	${CC} ${FLAGS} -c $< -o $@
 
 clean:
+	make clean -C $(LIBFT)
 	${RM} ${OBJECTS}
-	${RM} main.o
-	@make clean -C $(LIBFT)
 
 fclean: clean
+	make fclean -C $(LIBFT)
 	${RM} ${NAME}
-	@make fclean -C $(LIBFT)
 
-re: fclean all
+re: fclean all clean
+	make clean -C $(LIBFT)
 
 .PHONY: all clean fclean re
