@@ -161,6 +161,22 @@ void pad_space(int count, char c)
 	}
 }
 
+char *cut_string(char *src, int n)
+{
+	char *dest;
+	int i;
+
+	dest = ft_calloc(n + 1, sizeof (char));
+	i = 0;
+
+	while (i < n)
+	{
+		dest[i] = src[i];
+		i++;
+	}
+	return (dest);
+}
+
 void format_d(t_mod *mod, va_list *vars)
 {
 	int num;
@@ -193,12 +209,50 @@ void format_d(t_mod *mod, va_list *vars)
 	// write(1, "<End \n", 6);
 }
 
+void format_c(t_mod *mod, va_list *vars)
+{
+	char c;
+	int c_len;
+
+	// char is promoted to int when passed through '...'
+	c = va_arg(*vars, int);
+	c_len = 1;
+	if (mod->widt.is_on)
+	{
+		c_len = mod->widt.value;
+	}
+	if (mod->flag.is_on)
+	{
+		if (mod->flag.value == '0')
+		{
+			write(1, "0 flag used with c specifier.", 29);
+			return ;
+		}
+		write(1, &c, 1);
+		pad_space(c_len - 1, ' ');
+	}
+	else
+	{
+		pad_space(c_len - 1, ' ');
+		write(1, &c, 1);
+	}
+}
+
 void format_s(t_mod *mod, va_list *vars)
 {
+	char *v_s;
 	char *s;
 	int s_len;
 
-	s = va_arg(*vars, char *);
+	v_s = va_arg(*vars, char *);
+	if (mod->prec.is_on && mod->prec.value < ft_strlen(s))
+	{
+		s = cut_string(v_s, mod->prec.value);
+	}
+	else
+	{
+		s = v_s;
+	}
 	s_len = ft_strlen(s);
 	if (mod->widt.is_on && mod->widt.value > s_len)
 		s_len = mod->widt.value;
@@ -218,6 +272,7 @@ void format_s(t_mod *mod, va_list *vars)
 	}
 	else
 	{
+		pad_space(s_len - ft_strlen(s), ' ');
 		write(1, s, ft_strlen(s));
 	}
 	// write(1, "<End \n", 6);
@@ -229,10 +284,10 @@ void format_variable(t_mod *mod, va_list *vars)
 	{
 		format_s(mod, vars);
 	}
-/* 	else if (mod->spec.value == 'c')
+	else if (mod->spec.value == 'c')
 	{
 		format_c(mod, vars);
-	} */
+	}
 /* 	else if (mod->spec.value == 'p')
 	{
 		format_p(mod, vars);
