@@ -30,14 +30,6 @@ typedef struct s_format_mod
 	t_switch	spec;
 }	t_mod;
 
-typedef struct s_format_data
-{
-	t_mod		modifier;
-	char		*value;
-}	t_data;
-
-
 void ft_printf(char *string, ...);
-// int ft_printf(void);
 
 #endif

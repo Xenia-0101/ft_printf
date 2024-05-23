@@ -101,6 +101,10 @@ void init_mod(t_mod *mod)
 	mod->spec.value = 0;
 }
 
+void free_mod(t_mod *mod)
+{
+}
+
 void print_mod(t_mod *mod)
 {
 	if (mod->flag.is_on)
@@ -163,17 +167,20 @@ void pad_space(int count, char c)
 
 char *cut_string(char *src, int n)
 {
-	char *dest;
 	int i;
+	char *dest;
 
-	dest = ft_calloc(n + 1, sizeof (char));
 	i = 0;
+	dest = ft_calloc(n + 1, sizeof (char));
+	if (dest == NULL)
+		return NULL;
 
 	while (i < n)
 	{
 		dest[i] = src[i];
 		i++;
 	}
+	dest[i] = '\0';
 	return (dest);
 }
 
@@ -238,6 +245,7 @@ void format_c(t_mod *mod, va_list *vars)
 	}
 }
 
+
 void format_s(t_mod *mod, va_list *vars)
 {
 	char *v_s;
@@ -278,6 +286,10 @@ void format_s(t_mod *mod, va_list *vars)
 	// write(1, "<End \n", 6);
 }
 
+void format_p(t_mod *mod, va_list *vars)
+{
+}
+
 void format_variable(t_mod *mod, va_list *vars)
 {
 	if (mod->spec.value == 's')
@@ -288,19 +300,19 @@ void format_variable(t_mod *mod, va_list *vars)
 	{
 		format_c(mod, vars);
 	}
-/* 	else if (mod->spec.value == 'p')
+	else if (mod->spec.value == 'p')
 	{
 		format_p(mod, vars);
-	} */
-	else if (mod->spec.value == 'd')
+	}
+	else if (mod->spec.value == 'd' || mod->spec.value == 'i')
 	{
 		format_d(mod, vars);
 	}
-/* 	else if (mod->spec.value == 'i')
+/* 	else if (mod->spec.value == 'u')
 	{
-		format_i(mod, vars);
-	}
-	else if (mod->spec.value == 'x')
+		format_u(mod, vars);
+	} */
+/*	else if (mod->spec.value == 'x')
 	{
 		format_x(mod, vars);
 	}
@@ -334,12 +346,10 @@ void ft_printf(char *string, ...)
 			}
 			else
 			{
-				// get modifier
-				// get var
-				// write var
 				init_mod(&mod);
 				n += record_modifier(&mod, (string + n)) + 1;
 				format_variable(&mod, &vars);
+				free_mod(&mod);
 
 				// print_mod(&mod);
 			}

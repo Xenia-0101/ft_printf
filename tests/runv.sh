@@ -12,4 +12,5 @@ cd tests/
 # clear
 
 cc -g ../ft_printf.c ../libft/libft.a main.c test_printf.c
-./a.out
+
+valgrind --tool=memcheck --leak-check=yes ./a.out
