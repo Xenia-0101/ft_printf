@@ -32,19 +32,21 @@ int is_flag(char c)
 	return (c == '-' | c == '0');
 }
 
-int	ft_countnbr(int n, int count)
+int	ft_countdigits(int n, int count)
 {
+	if (n)
+		count++;
 	if (n < 0)
+	{
 		n *= -1;
-	if (n > 0)
+		count++;
+	}
+	while (n / 10 > 0)
 	{
 		count++;
-		ft_countnbr(n / 10, count);
+		n /= 10;
 	}
-	else
-	{
-		return (count);
-	}
+	return (count);
 }
 
 void analyse_mod(t_mod *mod, char *modifier)
@@ -146,7 +148,7 @@ int record_modifier(t_mod *mod, char *string)
 	n = mod_len;
 	while (n > 0)
 	{
-		modifier[n] = start[n--];
+		modifier[n] = start[n--];			// !! why does it not work when n-- is on the new line
 	}
 	// printf("modifier: %s\n", modifier);
 	// analyse modifier
@@ -159,6 +161,7 @@ int record_modifier(t_mod *mod, char *string)
 
 void pad_space(int count, char c)
 {
+	// printf("padding count: %d\n", count);
 	while (count-- > 0)
 	{
 		write(1, &c, 1);
@@ -187,33 +190,55 @@ char *cut_string(char *src, int n)
 void format_d(t_mod *mod, va_list *vars)
 {
 	int num;
-	int num_len;
+	int digit_count;
+	int char_count;
+	int is_neg;
 
 	num = va_arg(*vars, int);
-	num_len = ft_countnbr(num, 0);
-	// printf("Printing num %d which has %d digits\n", num, num_len);
-	if (mod->widt.is_on && mod->widt.value > num_len)
-		num_len = mod->widt.value;
-	// write(1, "Start>", 6);
-	if (mod->flag.is_on)
+	// account for number of digits in the number
+	digit_count = ft_countdigits(num, 0);
+	char_count = digit_count;
+	// printf("Printing num %d which has %d digits\n", num, digit_count);
+
+	// account for negative numbers
+	is_neg = 0;
+	if (num < 0)
 	{
-		if (mod->flag.value == '0')
-		{
-			pad_space(num_len - ft_countnbr(num, 0), '0');
+		num *= -1;
+		is_neg = 1;
+		mod->prec.value++;
+	}
+	// account for precision - determine min number of digits printed
+	if (mod->prec.is_on && mod->prec.value > digit_count)
+		char_count = mod->prec.value;
+
+	// account for width - add padding to the number
+	int padding_len = mod->widt.value - char_count;
+	if (mod->flag.is_on && mod->flag.value == '-')
+	{
+			if (is_neg)
+				write(1, "-", 1);
+			pad_space(mod->prec.value - digit_count, '0');
 			ft_putnbr_fd(num, 1);
-		}
-		else if (mod->flag.value == '-')
-		{
-			ft_putnbr_fd(num, 1);
-			pad_space(num_len - ft_countnbr(num, 0), ' ');
-		}
+			pad_space(padding_len, ' ');
 	}
 	else
 	{
-		pad_space(num_len - ft_countnbr(num, 0), ' ');
+		if (mod->flag.is_on && mod->flag.value == '0')
+		{
+			if (is_neg)
+				write(1, "-", 1);
+			pad_space(padding_len, '0');
+		}
+		else
+		{
+			pad_space(padding_len, ' ');
+			if (is_neg)
+				write(1, "-", 1);
+		}
+		pad_space(mod->prec.value - digit_count, '0');
 		ft_putnbr_fd(num, 1);
 	}
-	// write(1, "<End \n", 6);
 }
 
 void format_c(t_mod *mod, va_list *vars)
@@ -290,6 +315,46 @@ void format_p(t_mod *mod, va_list *vars)
 {
 }
 
+void format_u(t_mod *mod, va_list *vars)
+{
+	unsigned int num;
+	int digit_count;
+	int char_count;
+	int is_neg;
+
+	num = va_arg(*vars, unsigned int);
+	// account for number of digits in the number
+	digit_count = ft_countdigits(num, 0);
+	char_count = digit_count;
+	// printf("Printing num %d which has %d digits\n", num, digit_count);
+
+	// account for precision - determine min number of digits printed
+	if (mod->prec.is_on && mod->prec.value > digit_count)
+		char_count = mod->prec.value;
+
+	// account for width - add padding to the number
+	int padding_len = mod->widt.value - char_count;
+	if (mod->flag.is_on && mod->flag.value == '-')
+	{
+			pad_space(mod->prec.value - digit_count, '0');
+			ft_putnbr_fd(num, 1);
+			pad_space(padding_len, ' ');
+	}
+	else
+	{
+		if (mod->flag.is_on && mod->flag.value == '0')
+		{
+			pad_space(padding_len, '0');
+		}
+		else
+		{
+			pad_space(padding_len, ' ');
+		}
+		pad_space(mod->prec.value - digit_count, '0');
+		ft_putnbr_fd(num, 1);
+	}
+}
+
 void format_variable(t_mod *mod, va_list *vars)
 {
 	if (mod->spec.value == 's')
@@ -308,10 +373,10 @@ void format_variable(t_mod *mod, va_list *vars)
 	{
 		format_d(mod, vars);
 	}
-/* 	else if (mod->spec.value == 'u')
+	else if (mod->spec.value == 'u')
 	{
 		format_u(mod, vars);
-	} */
+	}
 /*	else if (mod->spec.value == 'x')
 	{
 		format_x(mod, vars);
@@ -348,6 +413,9 @@ void ft_printf(char *string, ...)
 			{
 				init_mod(&mod);
 				n += record_modifier(&mod, (string + n)) + 1;
+				// write(1, "\n", 1);
+				// write(1, &mod.spec.value, sizeof(mod.spec.value));
+				// write(1, "\n", 1);
 				format_variable(&mod, &vars);
 				free_mod(&mod);
 
