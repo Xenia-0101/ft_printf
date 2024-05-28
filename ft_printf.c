@@ -175,7 +175,7 @@ int record_modifier(t_mod *mod, char *string)
 
 }
 
-void pad_space(t_mod *mod, int count, char c)
+void pad_space(int count, char c)
 {
 	// printf("padding count: %d\n", count);
 	while (count-- > 0)
@@ -234,9 +234,9 @@ void format_d(t_mod *mod, va_list *vars)
 	{
 			if (is_neg)
 				write(1, "-", 1);
-			pad_space(mod, mod->prec.value - digit_count, '0');
+			pad_space(mod->prec.value - digit_count, '0');
 			ft_putnbr_fd(num, 1);
-			pad_space(mod, padding_len, ' ');
+			pad_space(padding_len, ' ');
 	}
 	else
 	{
@@ -244,15 +244,15 @@ void format_d(t_mod *mod, va_list *vars)
 		{
 			if (is_neg)
 				write(1, "-", 1);
-			pad_space(mod, padding_len, '0');
+			pad_space(padding_len, '0');
 		}
 		else
 		{
-			pad_space(mod, padding_len, ' ');
+			pad_space(padding_len, ' ');
 			if (is_neg)
 				write(1, "-", 1);
 		}
-		pad_space(mod, mod->prec.value - digit_count, '0');
+		pad_space(mod->prec.value - digit_count, '0');
 		ft_putnbr_fd(num, 1);
 	}
 }
@@ -277,11 +277,11 @@ void format_c(t_mod *mod, va_list *vars)
 			return ;
 		}
 		write(1, &c, 1);
-		pad_space(mod, c_len - 1, ' ');
+		pad_space(c_len - 1, ' ');
 	}
 	else
 	{
-		pad_space(mod, c_len - 1, ' ');
+		pad_space(c_len - 1, ' ');
 		write(1, &c, 1);
 	}
 }
@@ -311,21 +311,18 @@ void format_s(t_mod *mod, va_list *vars)
 		if (mod->flag.value == '-')
 		{
 			write(1, s, ft_strlen(s));
-			mod->total += ft_strlen(s);
-			pad_space(mod, s_len - ft_strlen(s), ' ');
+			pad_space(s_len - ft_strlen(s), ' ');
 		}
 		else
 		{
-			pad_space(mod, s_len - ft_strlen(s), ' ');
+			pad_space(s_len - ft_strlen(s), ' ');
 			write(1, s, ft_strlen(s));
-			mod->total += ft_strlen(s);
 		}
 	}
 	else
 	{
-		pad_space(mod, s_len - ft_strlen(s), ' ');
+		pad_space(s_len - ft_strlen(s), ' ');
 		write(1, s, ft_strlen(s));
-		mod->total += ft_strlen(s);
 	}
 	// write(1, "<End \n", 6);
 }
@@ -355,21 +352,21 @@ void format_u(t_mod *mod, va_list *vars)
 	int padding_len = mod->widt.value - char_count;
 	if (mod->flag.exists && mod->flag.value == '-')
 	{
-			pad_space(mod, mod->prec.value - digit_count, '0');
-			ft_putchar_u(num);
-			pad_space(mod, padding_len, ' ');
+			pad_space(mod->prec.value - digit_count, '0');
+			ft_putnbr_fd(num, 1);
+			pad_space(padding_len, ' ');
 	}
 	else
 	{
 		if (mod->flag.exists && mod->flag.value == '0')
 		{
-			pad_space(mod, padding_len, '0');
+			pad_space(padding_len, '0');
 		}
 		else
 		{
-			pad_space(mod, padding_len, ' ');
+			pad_space(padding_len, ' ');
 		}
-		pad_space(mod, mod->prec.value - digit_count, '0');
+		pad_space(mod->prec.value - digit_count, '0');
 		ft_putchar_u(num);
 	}
 
@@ -423,7 +420,6 @@ int ft_printf(char *string, ...)
 	va_start(vars, string);
 	// printf("The first param: %s\n", string);
 	// printf("%15d\n", 42);
-	mod.total = 0;
 
 	n = 0;
 	while (string[n])
@@ -433,7 +429,6 @@ int ft_printf(char *string, ...)
 			if (string[n + 1] == '%')
 			{
 				write(1, &string[n], 1);
-				mod.total++;
 				n++;
 			}
 			else
@@ -454,8 +449,7 @@ int ft_printf(char *string, ...)
 			write(1, &string[n], 1);
 			n++;
 		}
-
 	}
 	va_end(vars);
-	return (mod.total);
+	return (5);
 }
