@@ -18,18 +18,19 @@
 
 typedef struct s_switch
 {
-	int		is_on;
+	int		exists;
 	int		value;
 }	t_switch;
 
 typedef struct s_format_mod
 {
+	size_t		total;			// keeps track of the printed chars count
 	t_switch	flag;
 	t_switch	widt;
 	t_switch	prec;
 	t_switch	spec;
 }	t_mod;
 
-void ft_printf(char *string, ...);
+int ft_printf(char *string, ...);
 
 #endif

@@ -13,6 +13,22 @@
 #include "ft_printf.h"
 #include <string.h>
 
+void ft_putchar_u(unsigned int num)
+{
+	char c;
+
+	if (num == 0)
+		write(1, "0", 1);
+	else
+	{
+		if (num / 10 > 0)
+			ft_putchar_u(num / 10);
+		c = num % 10 + '0';
+		write(1, &c, 1);
+		num /= 10;
+	}
+}
+
 int is_specifier(char c)
 {
 	char	*specs = "cspdiuxX";
@@ -56,13 +72,13 @@ void analyse_mod(t_mod *mod, char *modifier)
 	n = 0;
 	if (is_flag(modifier[n]))
 	{
-		(mod->flag.is_on) = 1;
+		(mod->flag.exists) = 1;
 		(mod->flag.value) = modifier[n];
 		n++;
 	}
 	if (ft_isdigit(modifier[n]))
 	{
-		(mod->widt.is_on) = 1;
+		(mod->widt.exists) = 1;
 		(mod->widt.value) = ft_atoi(&modifier[n]);
 		while (ft_isdigit(modifier[n]))
 		{
@@ -71,7 +87,7 @@ void analyse_mod(t_mod *mod, char *modifier)
 	}
 	if (modifier[n] == '.')
 	{
-		(mod->prec.is_on) = 1;
+		(mod->prec.exists) = 1;
 		n++;
 		(mod->prec.value) = ft_atoi(&modifier[n]);
 		while (ft_isdigit(modifier[n]))
@@ -83,23 +99,23 @@ void analyse_mod(t_mod *mod, char *modifier)
 		return;							// what happens if no spec ??
 	else
 	{
-		(mod->spec.is_on) = 1;
+		(mod->spec.exists) = 1;
 		(mod->spec.value) = modifier[n];
 	}
 }
 
 void init_mod(t_mod *mod)
 {
-	mod->flag.is_on = 0;
+	mod->flag.exists = 0;
 	mod->flag.value = 0;
 
-	mod->widt.is_on = 0;
+	mod->widt.exists = 0;
 	mod->widt.value = 0;
 
-	mod->prec.is_on = 0;
+	mod->prec.exists = 0;
 	mod->prec.value = 0;
 
-	mod->spec.is_on = 0;
+	mod->spec.exists = 0;
 	mod->spec.value = 0;
 }
 
@@ -109,19 +125,19 @@ void free_mod(t_mod *mod)
 
 void print_mod(t_mod *mod)
 {
-	if (mod->flag.is_on)
+	if (mod->flag.exists)
 	{
 		printf("mod->flag.value: %c\n", mod->flag.value);
 	}
-	if (mod->widt.is_on)
+	if (mod->widt.exists)
 	{
 		printf("mod->widt.value: %d\n", mod->widt.value);
 	}
-	if (mod->prec.is_on)
+	if (mod->prec.exists)
 	{
 		printf("mod->prec.value: %d\n", mod->prec.value);
 	}
-	if (mod->spec.is_on)
+	if (mod->spec.exists)
 	{
 		printf("mod->spec.value: %c\n", mod->spec.value);
 	}
@@ -159,7 +175,7 @@ int record_modifier(t_mod *mod, char *string)
 
 }
 
-void pad_space(int count, char c)
+void pad_space(t_mod *mod, int count, char c)
 {
 	// printf("padding count: %d\n", count);
 	while (count-- > 0)
@@ -209,34 +225,34 @@ void format_d(t_mod *mod, va_list *vars)
 		mod->prec.value++;
 	}
 	// account for precision - determine min number of digits printed
-	if (mod->prec.is_on && mod->prec.value > digit_count)
+	if (mod->prec.exists && mod->prec.value > digit_count)
 		char_count = mod->prec.value;
 
 	// account for width - add padding to the number
 	int padding_len = mod->widt.value - char_count;
-	if (mod->flag.is_on && mod->flag.value == '-')
+	if (mod->flag.exists && mod->flag.value == '-')
 	{
 			if (is_neg)
 				write(1, "-", 1);
-			pad_space(mod->prec.value - digit_count, '0');
+			pad_space(mod, mod->prec.value - digit_count, '0');
 			ft_putnbr_fd(num, 1);
-			pad_space(padding_len, ' ');
+			pad_space(mod, padding_len, ' ');
 	}
 	else
 	{
-		if (mod->flag.is_on && mod->flag.value == '0')
+		if (mod->flag.exists && mod->flag.value == '0')
 		{
 			if (is_neg)
 				write(1, "-", 1);
-			pad_space(padding_len, '0');
+			pad_space(mod, padding_len, '0');
 		}
 		else
 		{
-			pad_space(padding_len, ' ');
+			pad_space(mod, padding_len, ' ');
 			if (is_neg)
 				write(1, "-", 1);
 		}
-		pad_space(mod->prec.value - digit_count, '0');
+		pad_space(mod, mod->prec.value - digit_count, '0');
 		ft_putnbr_fd(num, 1);
 	}
 }
@@ -249,11 +265,11 @@ void format_c(t_mod *mod, va_list *vars)
 	// char is promoted to int when passed through '...'
 	c = va_arg(*vars, int);
 	c_len = 1;
-	if (mod->widt.is_on)
+	if (mod->widt.exists)
 	{
 		c_len = mod->widt.value;
 	}
-	if (mod->flag.is_on)
+	if (mod->flag.exists)
 	{
 		if (mod->flag.value == '0')
 		{
@@ -261,11 +277,11 @@ void format_c(t_mod *mod, va_list *vars)
 			return ;
 		}
 		write(1, &c, 1);
-		pad_space(c_len - 1, ' ');
+		pad_space(mod, c_len - 1, ' ');
 	}
 	else
 	{
-		pad_space(c_len - 1, ' ');
+		pad_space(mod, c_len - 1, ' ');
 		write(1, &c, 1);
 	}
 }
@@ -278,7 +294,7 @@ void format_s(t_mod *mod, va_list *vars)
 	int s_len;
 
 	v_s = va_arg(*vars, char *);
-	if (mod->prec.is_on && mod->prec.value < ft_strlen(s))
+	if (mod->prec.exists && mod->prec.value < ft_strlen(s))
 	{
 		s = cut_string(v_s, mod->prec.value);
 	}
@@ -287,26 +303,29 @@ void format_s(t_mod *mod, va_list *vars)
 		s = v_s;
 	}
 	s_len = ft_strlen(s);
-	if (mod->widt.is_on && mod->widt.value > s_len)
+	if (mod->widt.exists && mod->widt.value > s_len)
 		s_len = mod->widt.value;
 	// write(1, "Start>", 6);
-	if (mod->flag.is_on)
+	if (mod->flag.exists)
 	{
 		if (mod->flag.value == '-')
 		{
 			write(1, s, ft_strlen(s));
-			pad_space(s_len - ft_strlen(s), ' ');
+			mod->total += ft_strlen(s);
+			pad_space(mod, s_len - ft_strlen(s), ' ');
 		}
 		else
 		{
-			pad_space(s_len - ft_strlen(s), ' ');
+			pad_space(mod, s_len - ft_strlen(s), ' ');
 			write(1, s, ft_strlen(s));
+			mod->total += ft_strlen(s);
 		}
 	}
 	else
 	{
-		pad_space(s_len - ft_strlen(s), ' ');
+		pad_space(mod, s_len - ft_strlen(s), ' ');
 		write(1, s, ft_strlen(s));
+		mod->total += ft_strlen(s);
 	}
 	// write(1, "<End \n", 6);
 }
@@ -329,30 +348,36 @@ void format_u(t_mod *mod, va_list *vars)
 	// printf("Printing num %d which has %d digits\n", num, digit_count);
 
 	// account for precision - determine min number of digits printed
-	if (mod->prec.is_on && mod->prec.value > digit_count)
+	if (mod->prec.exists && mod->prec.value > digit_count)
 		char_count = mod->prec.value;
 
 	// account for width - add padding to the number
 	int padding_len = mod->widt.value - char_count;
-	if (mod->flag.is_on && mod->flag.value == '-')
+	if (mod->flag.exists && mod->flag.value == '-')
 	{
-			pad_space(mod->prec.value - digit_count, '0');
-			ft_putnbr_fd(num, 1);
-			pad_space(padding_len, ' ');
+			pad_space(mod, mod->prec.value - digit_count, '0');
+			ft_putchar_u(num);
+			pad_space(mod, padding_len, ' ');
 	}
 	else
 	{
-		if (mod->flag.is_on && mod->flag.value == '0')
+		if (mod->flag.exists && mod->flag.value == '0')
 		{
-			pad_space(padding_len, '0');
+			pad_space(mod, padding_len, '0');
 		}
 		else
 		{
-			pad_space(padding_len, ' ');
+			pad_space(mod, padding_len, ' ');
 		}
-		pad_space(mod->prec.value - digit_count, '0');
-		ft_putnbr_fd(num, 1);
+		pad_space(mod, mod->prec.value - digit_count, '0');
+		ft_putchar_u(num);
 	}
+
+
+
+
+		//ft_putnbr_fd(num, 1);
+	//}
 }
 
 void format_variable(t_mod *mod, va_list *vars)
@@ -387,7 +412,7 @@ void format_variable(t_mod *mod, va_list *vars)
 	} */
 }
 
-void ft_printf(char *string, ...)
+int ft_printf(char *string, ...)
 {
 	int n;
 	va_list vars;
@@ -398,6 +423,7 @@ void ft_printf(char *string, ...)
 	va_start(vars, string);
 	// printf("The first param: %s\n", string);
 	// printf("%15d\n", 42);
+	mod.total = 0;
 
 	n = 0;
 	while (string[n])
@@ -407,6 +433,7 @@ void ft_printf(char *string, ...)
 			if (string[n + 1] == '%')
 			{
 				write(1, &string[n], 1);
+				mod.total++;
 				n++;
 			}
 			else
@@ -430,4 +457,5 @@ void ft_printf(char *string, ...)
 
 	}
 	va_end(vars);
+	return (mod.total);
 }
