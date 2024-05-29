@@ -24,6 +24,7 @@ typedef struct s_switch
 
 typedef struct s_format_mod
 {
+	size_t		total;
 	t_switch	flag;
 	t_switch	widt;
 	t_switch	prec;

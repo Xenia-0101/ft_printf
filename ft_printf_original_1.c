@@ -13,43 +13,12 @@
 #include "ft_printf.h"
 #include <string.h>
 
-void ft_putchar_u(t_mod *mod, unsigned int num)
+void ft_putchar_u(t_mod *mod, int num)
 {
 	char c;
 
 	if (num == 0)
 		write(1, "0", 1);
-	else
-	{
-		if (num / 10 > 0)
-			ft_putchar_u(mod, num / 10);
-		c = num % 10 + '0';
-		write(1, &c, 1);
-		mod->total++;
-		num /= 10;
-	}
-}
-
-void	ft_putchar_d(t_mod *mod, int num)
-{
-		char c;
-
-	if (num == 0)
-	{
-		write(1, "0", 1);
-		mod->total++;
-	}
-	else if (num == -2147483648)
-	{
-		write(1, "-2147483648", 11);
-		mod->total += 11;
-	}
-	else if (num < 0)
-	{
-		write(1, "-", 1);
-		mod->total++;
-		ft_putchar_d(mod, -1 * num);
-	}
 	else
 	{
 		if (num / 10 > 0)
@@ -89,18 +58,6 @@ int	ft_countdigits(int n, int count)
 		n *= -1;
 		count++;
 	}
-	while (n / 10 > 0)
-	{
-		count++;
-		n /= 10;
-	}
-	return (count);
-}
-
-int	ft_countdigits_u(unsigned int n, int count)
-{
-	if (n)
-		count++;
 	while (n / 10 > 0)
 	{
 		count++;
@@ -207,24 +164,32 @@ void print_mod(t_mod *mod)
 int record_modifier(t_mod *mod, char *string)
 {
 	int n;
+	int mod_len;
 	char *start;
 	char *modifier;
 
+	mod_len = 0;
 	n = 0;
 	start = ft_strchr(string, '%');
 	// get char count of modifier
 	while (!is_specifier(start[n]))
 	{
+		mod_len++;
 		n++;
 	}
 	// printf("\nchars in modifier: %d\n", mod_len);
-	modifier = ft_calloc(n + 1, sizeof (char));
-	ft_memcpy(modifier, start + 1, n);
+	modifier = ft_calloc(mod_len, sizeof (char));
+	n = mod_len;
+	while (n > 0)
+	{
+		modifier[n] = start[n--];			// !! why does it not work when n-- is on the new line
+	}
 	// printf("modifier: %s\n", modifier);
 	// analyse modifier
 	analyse_mod(mod, modifier);
 
-	return (n);
+
+	return (mod_len);
 
 }
 
@@ -287,12 +252,9 @@ void format_d(t_mod *mod, va_list *vars)
 	if (mod->flag.exists && mod->flag.value == '-')
 	{
 			if (is_neg)
-			{
 				write(1, "-", 1);
-				mod->total++;
-			}
 			pad_space(mod, mod->prec.value - digit_count, '0');
-			ft_putchar_d(mod, num);
+			ft_putnbr_fd(num, 1);
 			pad_space(mod, padding_len, ' ');
 	}
 	else
@@ -300,23 +262,17 @@ void format_d(t_mod *mod, va_list *vars)
 		if (mod->flag.exists && mod->flag.value == '0')
 		{
 			if (is_neg)
-			{
 				write(1, "-", 1);
-				mod->total++;
-			}
 			pad_space(mod, padding_len, '0');
 		}
 		else
 		{
 			pad_space(mod, padding_len, ' ');
 			if (is_neg)
-			{
 				write(1, "-", 1);
-				mod->total++;
-			}
 		}
 		pad_space(mod, mod->prec.value - digit_count, '0');
-		ft_putchar_d(mod, num);
+		ft_putnbr_fd(num, 1);
 	}
 }
 
@@ -340,14 +296,12 @@ void format_c(t_mod *mod, va_list *vars)
 			return ;
 		}
 		write(1, &c, 1);
-		mod->total++;
 		pad_space(mod, c_len - 1, ' ');
 	}
 	else
 	{
 		pad_space(mod, c_len - 1, ' ');
 		write(1, &c, 1);
-		mod->total++;
 	}
 }
 
@@ -376,29 +330,24 @@ void format_s(t_mod *mod, va_list *vars)
 		if (mod->flag.value == '-')
 		{
 			write(1, s, ft_strlen(s));
-			mod->total += ft_strlen(s);
 			pad_space(mod, s_len - ft_strlen(s), ' ');
 		}
 		else
 		{
 			pad_space(mod, s_len - ft_strlen(s), ' ');
 			write(1, s, ft_strlen(s));
-			mod->total += ft_strlen(s);
 		}
 	}
 	else
 	{
 		pad_space(mod, s_len - ft_strlen(s), ' ');
 		write(1, s, ft_strlen(s));
-		mod->total += ft_strlen(s);
 	}
 	// write(1, "<End \n", 6);
 }
 
 void format_p(t_mod *mod, va_list *vars)
 {
-
-
 }
 
 void format_u(t_mod *mod, va_list *vars)
@@ -410,7 +359,7 @@ void format_u(t_mod *mod, va_list *vars)
 
 	num = va_arg(*vars, unsigned int);
 	// account for number of digits in the number
-	digit_count = ft_countdigits_u(num, 0);
+	digit_count = ft_countdigits(num, 0);
 	char_count = digit_count;
 	// printf("Printing num %d which has %d digits\n", num, digit_count);
 
@@ -439,6 +388,12 @@ void format_u(t_mod *mod, va_list *vars)
 		pad_space(mod, mod->prec.value - digit_count, '0');
 		ft_putchar_u(mod, num);
 	}
+
+
+
+
+		//ft_putnbr_fd(num, 1);
+	//}
 }
 
 void format_variable(t_mod *mod, va_list *vars)
@@ -502,15 +457,18 @@ int ft_printf(char *string, ...)
 			else
 			{
 				n += record_modifier(&mod, (string + n)) + 1;
-				// print_mod(&mod);
+				// write(1, "\n", 1);
+				// write(1, &mod.spec.value, sizeof(mod.spec.value));
+				// write(1, "\n", 1);
 				format_variable(&mod, &vars);
 				restore_mod(&mod);
+
+				// print_mod(&mod);
 			}
 		}
 		else
 		{
 			write(1, &string[n], 1);
-			mod.total++;
 			n++;
 		}
 	}
