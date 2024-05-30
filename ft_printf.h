@@ -31,6 +31,6 @@ typedef struct s_format_mod
 	t_switch	spec;
 }	t_mod;
 
-int ft_printf(char *string, ...);
+int ft_printf(const char *string, ...);
 
 #endif

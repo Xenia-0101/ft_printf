@@ -6,7 +6,7 @@ ft_printf.c \
 OBJECTS		=		$(SOURCES:.c=.o)
 HEADER		=		includes
 LIBFT		=		libft
-# FLAGS		=		-Wall -Wextra -Werror
+FLAGS		=		-Wall -Wextra -Werror
 NAME		=		libftprintf.a
 RM			=		rm -f
 CC			=		gcc

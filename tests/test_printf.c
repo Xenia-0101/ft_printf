@@ -35,7 +35,7 @@ void test_printf(void)
 	printf("\n");
 	int val = -4095;
 	int hex_val = 0xfff;
-/*
+
 	ft_printf("\nTesting i\n");
 
 	printf("|------------|-----------------|-----------------|\n");
@@ -98,8 +98,8 @@ void test_printf(void)
 	ft_printf("| %-10s | %15.19d | %15.19d |\n", "%.19d", val, hex_val);
 	ft_printf("|------------|-----------------|-----------------|\n");
 
-	ft_printf("\n"); */
-/* 	ft_printf("\nTesting s\n");
+	ft_printf("\n");
+	ft_printf("\nTesting s\n");
 
 	char greet[] = "Hey >:-)";
 	printf("|------------|-----------------|\n");
@@ -131,7 +131,7 @@ void test_printf(void)
 	ft_printf("|------------|-----------------|\n");
 	// '0' flag used with ‘%s’
 
-	printf("\n"); */
+	printf("\n");
 	ft_printf("\nTesting u\n");
 
 	unsigned int u_int = 20;

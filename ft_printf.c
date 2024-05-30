@@ -18,7 +18,10 @@ void ft_putchar_u(t_mod *mod, unsigned int num)
 	char c;
 
 	if (num == 0)
+	{
 		write(1, "0", 1);
+		mod->total++;
+	}
 	else
 	{
 		if (num / 10 > 0)
@@ -61,6 +64,56 @@ void	ft_putchar_d(t_mod *mod, int num)
 	}
 }
 
+void	ft_putchar_x(t_mod *mod, unsigned int num)
+{
+	char *base;
+	char digit;
+	int	m;
+
+	base = ft_strdup("0123456789abcdef");
+	if (num == 0)
+	{
+		write(1, "0", 1);
+		mod->total++;
+	}
+	else
+	{
+		if (num / 16 > 0)
+			ft_putchar_x(mod, num / 16);
+		m = num % 16;
+		digit = base[m];
+		write(1, &digit, 1);
+		mod->total++;
+		num /= 16;
+	}
+
+}
+
+void	ft_putchar_X(t_mod *mod, unsigned int num)
+{
+	char *base;
+	char digit;
+	int	m;
+
+	base = ft_strdup("0123456789ABCDEF");
+	if (num == 0)
+	{
+		write(1, "0", 1);
+		mod->total++;
+	}
+	else
+	{
+		if (num / 16 > 0)
+			ft_putchar_X(mod, num / 16);
+		m = num % 16;
+		digit = base[m];
+		write(1, &digit, 1);
+		mod->total++;
+		num /= 16;
+	}
+
+}
+
 int is_specifier(char c)
 {
 	char	*specs = "cspdiuxX";
@@ -77,7 +130,7 @@ int is_specifier(char c)
 
 int is_flag(char c)
 {
-	return (c == '-' | c == '0');
+	return ((c == '-') | (c == '0') | (c == '#'));
 }
 
 int	ft_countdigits(int n, int count)
@@ -105,6 +158,18 @@ int	ft_countdigits_u(unsigned int n, int count)
 	{
 		count++;
 		n /= 10;
+	}
+	return (count);
+}
+
+int ft_countdigits_x(unsigned int n, int count)
+{
+	if (n)
+		count++;
+	while (n / 16 > 0)
+	{
+		count++;
+		n /= 16;
 	}
 	return (count);
 }
@@ -180,9 +245,9 @@ void restore_mod(t_mod *mod)
 	mod->spec.value = 0;
 }
 
-void free_mod(t_mod *mod)
+/* void free_mod(t_mod *mod)
 {
-}
+} */
 
 void print_mod(t_mod *mod)
 {
@@ -204,7 +269,7 @@ void print_mod(t_mod *mod)
 	}
 }
 
-int record_modifier(t_mod *mod, char *string)
+int record_modifier(t_mod *mod, const char *string)
 {
 	int n;
 	char *start;
@@ -255,6 +320,39 @@ char *cut_string(char *src, int n)
 	}
 	dest[i] = '\0';
 	return (dest);
+}
+
+void the_ultimate_padding_function(t_mod *mod, void (*f)(t_mod *, unsigned int), int count, unsigned int num)
+{
+	int char_count;
+
+	char_count = count;
+	// account for precision - determine min number of digits printed
+	if (mod->prec.exists && mod->prec.value > count)
+		char_count = mod->prec.value;
+
+	// account for width - add padding to the number
+	int padding_len = mod->widt.value - char_count;
+	if (mod->flag.exists && mod->flag.value == '-')
+	{
+			pad_space(mod, mod->prec.value - count, '0');
+			f(mod, num);
+			pad_space(mod, padding_len, ' ');
+	}
+	else
+	{
+		if (mod->flag.exists && mod->flag.value == '0')
+		{
+			pad_space(mod, padding_len, '0');
+		}
+		else
+		{
+			pad_space(mod, padding_len, ' ');
+		}
+		pad_space(mod, mod->prec.value - count, '0');
+		f(mod, num);
+	}
+
 }
 
 void format_d(t_mod *mod, va_list *vars)
@@ -359,7 +457,7 @@ void format_s(t_mod *mod, va_list *vars)
 	int s_len;
 
 	v_s = va_arg(*vars, char *);
-	if (mod->prec.exists && mod->prec.value < ft_strlen(s))
+	if (mod->prec.exists && mod->prec.value < ft_strlen(v_s))
 	{
 		s = cut_string(v_s, mod->prec.value);
 	}
@@ -395,50 +493,34 @@ void format_s(t_mod *mod, va_list *vars)
 	// write(1, "<End \n", 6);
 }
 
-void format_p(t_mod *mod, va_list *vars)
+/* void format_p(t_mod *mod, va_list *vars)
 {
 
 
-}
+} */
 
 void format_u(t_mod *mod, va_list *vars)
 {
 	unsigned int num;
-	int digit_count;
-	int char_count;
-	int is_neg;
 
 	num = va_arg(*vars, unsigned int);
-	// account for number of digits in the number
-	digit_count = ft_countdigits_u(num, 0);
-	char_count = digit_count;
-	// printf("Printing num %d which has %d digits\n", num, digit_count);
+	the_ultimate_padding_function(mod, &ft_putchar_u, ft_countdigits_u(num, 0), num);
+}
 
-	// account for precision - determine min number of digits printed
-	if (mod->prec.exists && mod->prec.value > digit_count)
-		char_count = mod->prec.value;
+void format_x(t_mod *mod, va_list *vars)
+{
+	unsigned int num;
 
-	// account for width - add padding to the number
-	int padding_len = mod->widt.value - char_count;
-	if (mod->flag.exists && mod->flag.value == '-')
-	{
-			pad_space(mod, mod->prec.value - digit_count, '0');
-			ft_putchar_u(mod, num);
-			pad_space(mod, padding_len, ' ');
-	}
-	else
-	{
-		if (mod->flag.exists && mod->flag.value == '0')
-		{
-			pad_space(mod, padding_len, '0');
-		}
-		else
-		{
-			pad_space(mod, padding_len, ' ');
-		}
-		pad_space(mod, mod->prec.value - digit_count, '0');
-		ft_putchar_u(mod, num);
-	}
+	num = va_arg(*vars, unsigned int);
+	the_ultimate_padding_function(mod, &ft_putchar_x, ft_countdigits_x(num, 0), num);
+}
+
+void format_X(t_mod *mod, va_list *vars)
+{
+	unsigned int num;
+
+	num = va_arg(*vars, unsigned int);
+	the_ultimate_padding_function(mod, &ft_putchar_X, ft_countdigits_x(num, 0), num);
 }
 
 void format_variable(t_mod *mod, va_list *vars)
@@ -451,10 +533,10 @@ void format_variable(t_mod *mod, va_list *vars)
 	{
 		format_c(mod, vars);
 	}
-	else if (mod->spec.value == 'p')
+/* 	else if (mod->spec.value == 'p')
 	{
 		format_p(mod, vars);
-	}
+	} */
 	else if (mod->spec.value == 'd' || mod->spec.value == 'i')
 	{
 		format_d(mod, vars);
@@ -463,30 +545,26 @@ void format_variable(t_mod *mod, va_list *vars)
 	{
 		format_u(mod, vars);
 	}
-/*	else if (mod->spec.value == 'x')
+	else if (mod->spec.value == 'x')
 	{
 		format_x(mod, vars);
 	}
 	else if (mod->spec.value == 'X')
 	{
 		format_X(mod, vars);
-	} */
+	}
 }
 
-int ft_printf(char *string, ...)
+int ft_printf(const char *string, ...)
 {
 	int n;
 	size_t res;
 	va_list vars;
 	t_mod mod;
-	int buff_1;
-	char *buff_2;
 
 	init_mod(&mod);
 
 	va_start(vars, string);
-	// printf("The first param: %s\n", string);
-	// printf("%15d\n", 42);
 
 	n = 0;
 	while (string[n])
@@ -502,7 +580,7 @@ int ft_printf(char *string, ...)
 			else
 			{
 				n += record_modifier(&mod, (string + n)) + 1;
-				// print_mod(&mod);
+				print_mod(&mod);
 				format_variable(&mod, &vars);
 				restore_mod(&mod);
 			}
@@ -516,6 +594,6 @@ int ft_printf(char *string, ...)
 	}
 	va_end(vars);
 	res = mod.total;
-	free_mod(&mod);
+	// free_mod(&mod);
 	return (res);
 }

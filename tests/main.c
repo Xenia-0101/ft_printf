@@ -23,11 +23,21 @@ int main(void)
 
 	// printf("%d\t%d\t%d\n%d\t%d\t%d\n", oone, ttwo, tthree, one, two, three);
 
-	char *ptr = "hello";
-	uint64_t x = (uint64_t) &ptr;
+/* 	char ptr = 10;
+	char *add = &ptr;
 
-	printf("%lx\n", x);
-	printf("%p\n", ptr);
+	// uint64_t x = (uint64_t) &ptr;
+	printf("%x\n", add);
+	printf("%p\n", add); */
+
+	int random = 55;
+
+	int res2 = ft_printf("%#.5x\t", random);
+	int res1 = printf("%x\n", random);
+	int res3 = printf(">%-#15x<\n", random);
+	printf(">%#15x<\n", random);
+
+	printf("%d\t%d\n", res2, res1);
 
 
 	return (0);
