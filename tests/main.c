@@ -30,14 +30,25 @@ int main(void)
 	printf("%x\n", add);
 	printf("%p\n", add); */
 
-	int random = 55;
+	// int random = 55;
 
-	int res2 = ft_printf("%#.5x\t", random);
-	int res1 = printf("%x\n", random);
-	int res3 = printf(">%-#15x<\n", random);
-	printf(">%#15x<\n", random);
+	// int res2 = ft_printf("%#.5x\t", random);
+	// int res1 = printf("%x\n", random);
+	// int res3 = printf(">%-#15x<\n", random);
+	// printf(">%#15x<\n", random);
 
-	printf("%d\t%d\n", res2, res1);
+	// printf("%d\t%d\n", res2, res1);
+
+
+	ft_printf("%c", '0');
+	ft_printf(" %c ", '0');
+	ft_printf(" %c", '0' - 256);
+	ft_printf("%c ", '0' + 256);
+	ft_printf(" %c %c %c ", '0', 0, '1');
+	ft_printf(" %c %c %c ", ' ', ' ', ' ');
+	ft_printf(" %c %c %c ", '1', '2', '3');
+	ft_printf(" %c %c %c ", '2', '1', 0);
+	ft_printf(" %c %c %c ", 0, '1', '2');
 
 
 	return (0);

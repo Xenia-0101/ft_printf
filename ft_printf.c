@@ -245,10 +245,6 @@ void restore_mod(t_mod *mod)
 	mod->spec.value = 0;
 }
 
-/* void free_mod(t_mod *mod)
-{
-} */
-
 void print_mod(t_mod *mod)
 {
 	if (mod->flag.exists)
@@ -288,6 +284,7 @@ int record_modifier(t_mod *mod, const char *string)
 	// printf("modifier: %s\n", modifier);
 	// analyse modifier
 	analyse_mod(mod, modifier);
+	free(modifier);
 
 	return (n);
 
@@ -560,9 +557,13 @@ int ft_printf(const char *string, ...)
 	int n;
 	size_t res;
 	va_list vars;
-	t_mod mod;
+	t_mod *mod;
 
-	init_mod(&mod);
+	mod = malloc(sizeof (t_mod));
+	if (!mod)
+		return (0);
+
+	init_mod(mod);
 
 	va_start(vars, string);
 
@@ -574,26 +575,26 @@ int ft_printf(const char *string, ...)
 			if (string[n + 1] == '%')
 			{
 				write(1, &string[n], 1);
-				mod.total++;
+				mod->total++;
 				n++;
 			}
 			else
 			{
-				n += record_modifier(&mod, (string + n)) + 1;
-				print_mod(&mod);
-				format_variable(&mod, &vars);
-				restore_mod(&mod);
+				n += record_modifier(mod, (string + n)) + 1;
+				// print_mod(mod);
+				format_variable(mod, &vars);
+				restore_mod(mod);
 			}
 		}
 		else
 		{
 			write(1, &string[n], 1);
-			mod.total++;
+			mod->total++;
 			n++;
 		}
 	}
 	va_end(vars);
-	res = mod.total;
-	// free_mod(&mod);
+	res = mod->total;
+	free(mod);
 	return (res);
 }
