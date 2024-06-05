@@ -6,7 +6,7 @@
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 13:35:22 by xvislock          #+#    #+#             */
-/*   Updated: 2024/06/05 12:51:58 by xvislock         ###   ########.fr       */
+/*   Updated: 2024/06/05 20:03:52 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,11 @@
 
 static void	ft_putchar_d(t_mod *mod, int num)
 {
-		char c;
+	char c;
 
 	if (num == 0)
 	{
-		write(1, "0", 1);
-		mod->total++;
+		mod->total += write(1, "0", 1);
 	}
 	else if (num == -2147483648)
 	{
@@ -27,8 +26,7 @@ static void	ft_putchar_d(t_mod *mod, int num)
 	}
 	else if (num < 0)
 	{
-		write(1, "-", 1);
-		mod->total++;
+		mod->total += write(1, "-", 1);
 		ft_putchar_d(mod, -1 * num);
 	}
 	else
@@ -36,8 +34,7 @@ static void	ft_putchar_d(t_mod *mod, int num)
 		if (num / 10 > 0)
 			ft_putchar_d(mod, num / 10);
 		c = num % 10 + '0';
-		write(1, &c, 1);
-		mod->total++;
+		mod->total += write(1, &c, 1);
 		num /= 10;
 	}
 }
@@ -49,12 +46,10 @@ void format_d(t_mod *mod, int num)
 	int is_neg;
 	int padding_len;
 
-
 	// account for number of digits in the number
 	digit_count = ft_countdigits_d(num);
 	char_count = digit_count;
-	// printf("Printing num %d which has %d digits\n", num, digit_count);
-
+	
 	// account for negative numbers
 	is_neg = 0;
 	if (num < 0)

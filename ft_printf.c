@@ -33,6 +33,7 @@ int is_flag(char c)
 			| (c == ' ') | (c == '+'));
 }
 
+
 void analyse_mod(t_mod *mod, char *modifier)
 {
 	int n;
@@ -42,23 +43,23 @@ void analyse_mod(t_mod *mod, char *modifier)
 	{
 		if (modifier[n] == '0')
 		{
-			mod->flag.zero.exists = 1;
+			mod->flag.zero = 1;
 		}
 		else if (modifier[n] == '-')
 		{
-			mod->flag.dash.exists = 1;
+			mod->flag.dash = 1;
 		}
 		else if (modifier[n] == ' ')
 		{
-			mod->flag.spac.exists = 1;
+			mod->flag.spac = 1;
 		}
 		else if (modifier[n] == '+')
 		{
-			mod->flag.plus.exists = 1;
+			mod->flag.plus = 1;
 		}
 		else if (modifier[n] == '#')
 		{
-			mod->flag.hash.exists = 1;
+			mod->flag.hash = 1;
 		}
 		n++;
 	}
@@ -94,8 +95,11 @@ void init_mod(t_mod *mod)
 {
 	mod->total = 0;
 
-	mod->flag.exists = 0;
-	mod->flag.value = 0;
+	mod->flag.dash = 0;
+	mod->flag.zero = 0;
+	mod->flag.spac = 0;
+	mod->flag.plus = 0;
+	mod->flag.hash = 0;
 
 	mod->widt.exists = 0;
 	mod->widt.value = 0;
@@ -109,8 +113,11 @@ void init_mod(t_mod *mod)
 
 void restore_mod(t_mod *mod)
 {
-	mod->flag.exists = 0;
-	mod->flag.value = 0;
+	mod->flag.dash = 0;
+	mod->flag.zero = 0;
+	mod->flag.spac = 0;
+	mod->flag.plus = 0;
+	mod->flag.hash = 0;
 
 	mod->widt.exists = 0;
 	mod->widt.value = 0;
@@ -124,10 +131,16 @@ void restore_mod(t_mod *mod)
 
 void print_mod(t_mod *mod)
 {
-	if (mod->flag.exists)
-	{
-		printf("mod->flag.value: %c\n", mod->flag.value);
-	}
+	if (mod->flag.zero)
+		printf("mod->flag.zero: %d\n", mod->flag.zero);
+	if (mod->flag.dash)
+		printf("mod->flag.dash: %d\n", mod->flag.dash);
+	if (mod->flag.spac)
+		printf("mod->flag.spac: %d\n", mod->flag.spac);
+	if (mod->flag.zero)
+		printf("mod->flag.plus: %d\n", mod->flag.plus);
+	if (mod->flag.hash)
+		printf("mod->flag.hash: %d\n", mod->flag.hash);
 	if (mod->widt.exists)
 	{
 		printf("mod->widt.value: %d\n", mod->widt.value);
@@ -202,8 +215,7 @@ int ft_printf(const char *string, ...)
 		}
 		else
 		{
-			write(1, &string[n], 1);
-			mod->total++;
+			mod->total += write(1, &string[n], 1);
 			n++;
 		}
 	}
@@ -213,47 +225,12 @@ int ft_printf(const char *string, ...)
 	return (res);
 }
 
-/*
+
 #include <limits.h>
 int main(void)
 {
-	int res1 = printf(">> %-2u <<\n", -1);
-	int res11 = ft_printf(">> %-2u <<\n", -1);
-	int res2 = printf(">> %-13u <<\n", UINT_MAX);
-	int res22 = ft_printf(">> %-13u <<\n", UINT_MAX);
-	int res3 = printf(">> %-1x <<\n", 0);
-	int res33 = ft_printf(">> %-1x <<\n", 0);
-
-	printf("%d\t%d\t%d\n%d\t%d\t%d\n", res1, res2, res3, res11, res22, res33);
-
-	int rres1 = printf(">> %02u <<\n", -1);
-	int rres11 = ft_printf(">> %02u <<\n", -1);
-	int rres2 = printf(">> %013u <<\n", UINT_MAX);
-	int rres22 = ft_printf(">> %013u <<\n", UINT_MAX);
-	int rres3 = printf(">> %01x <<\n", 0);
-	int rres33 = ft_printf(">> %01x <<\n", 0);
-
-	printf("%d\t%d\t%d\n%d\t%d\t%d\n", rres1, rres2, rres3, rres11, rres22, rres33);
-
-	int ares1 = printf(">> %.1u <<\n", 0);
-	int ares11 = ft_printf(">> %.1u <<\n", 0);
-	int ares2 = printf(">> %.11u <<\n", LONG_MIN);
-	int ares22 = ft_printf(">> %.11u <<\n", LONG_MIN);
-	int ares3 = printf(">> %.8u %.9u %.10u %.11u %.12u %.13u %.14u<<\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42);
-	int ares33 = ft_printf(">> %.8u %.9u %.10u %.11u %.12u %.13u %.14u<<\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42);
-
-	printf("%d\t%d\t%d\n%d\t%d\t%d\n", ares1, ares2, ares3, ares11, ares22, ares33);
-
-
-	int ress1 = printf("> %.s <\n", "-");
-	int ress11 = ft_printf("> %.s <\n", "-");
-	int ress2 = printf("> %.1s %.2s %.3s %.4s <\n", " - ", "", "4", "");
-	int ress22 = ft_printf("> %.1s %.2s %.3s %.4s <\n", " - ", "", "4", "");
-	int ress3 = printf("> %.2s %.3s %.4s %.5s %.1s <\n", " - ", "", "4", "", "2 ");
-	int ress33 = ft_printf("> %.2s %.3s %.4s %.5s %.1s <\n", " - ", "", "4", "", "2 ");
-	printf("%d\t%d\t%d\n%d\t%d\t%d\n", ress1, ress2, ress3, ress11, ress22, ress33);
-
+	ft_printf("Hello %+0 -15.5d, the answer is %s.\n", 42, "You");
 }
 
 
- */
+

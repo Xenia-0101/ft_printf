@@ -6,7 +6,7 @@
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 13:16:16 by xvislock          #+#    #+#             */
-/*   Updated: 2024/06/05 10:31:08 by xvislock         ###   ########.fr       */
+/*   Updated: 2024/06/05 18:08:50 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,20 +36,17 @@ void format_s(t_mod *mod, char *v_s)
 	s_len = ft_strlen(s);
 	if (mod->widt.exists && mod->widt.value > s_len)
 		s_len = mod->widt.value;
-	if (mod->flag.exists)
+	if (mod->flag.dash)
 	{
-		if (mod->flag.value == '-')
-		{
 			write(1, s, ft_strlen(s));
 			mod->total += ft_strlen(s);
 			pad_space(mod, s_len - ft_strlen(s), ' ');
-		}
-		else
-		{
-			pad_space(mod, s_len - ft_strlen(s), ' ');
-			write(1, s, ft_strlen(s));
-			mod->total += ft_strlen(s);
-		}
+	}
+	else if (mod->flag.zero)
+	{
+		pad_space(mod, s_len - ft_strlen(s), ' ');
+		write(1, s, ft_strlen(s));
+		mod->total += ft_strlen(s);
 	}
 	else
 	{

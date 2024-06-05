@@ -24,11 +24,11 @@ typedef struct s_switch
 
 typedef struct s_flag
 {
-	t_switch	zero;
-	t_switch	dash;
-	t_switch	spac;
-	t_switch	plus;
-	t_switch	hash;
+	int	zero;
+	int	dash;
+	int	spac;
+	int	plus;
+	int	hash;
 }				t_flag;
 
 typedef struct s_format_mod
@@ -50,7 +50,7 @@ int		ft_countdigits_u(unsigned int n);
 int		ft_countdigits_x(unsigned int n);
 int		ft_countdigits_p(unsigned long n);
 
-void	format_c(t_mod *mod, char c);
+void	format_c(t_mod *mod, unsigned char c);
 void	format_s(t_mod *mod, char *v_s);
 void	format_d(t_mod *mod, int num);
 void	format_u(t_mod *mod, unsigned int num);
