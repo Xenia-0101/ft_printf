@@ -6,7 +6,7 @@
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 13:31:52 by xvislock          #+#    #+#             */
-/*   Updated: 2024/06/05 09:32:50 by xvislock         ###   ########.fr       */
+/*   Updated: 2024/06/05 12:48:33 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,8 @@ static void ft_putchar_u(t_mod *mod, unsigned int num)
 }
 
 
-void format_u(t_mod *mod, va_list *vars)
+void format_u(t_mod *mod, unsigned int num)
 {
-	unsigned int num;
-
-	num = va_arg(*vars, unsigned int);
-	the_uff(mod, &ft_putchar_u, ft_countdigits_u(num, 0), num);
+	the_uff(mod, &ft_putchar_u, ft_countdigits_u(num), num);
 }
 

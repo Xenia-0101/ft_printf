@@ -20,7 +20,7 @@ typedef struct s_switch
 {
 	int		exists;
 	int		value;
-}	t_switch;
+}			t_switch;
 
 typedef struct s_format_mod
 {
@@ -36,15 +36,15 @@ void	decide_format(t_mod *mod, va_list *vars);
 void	the_ultimate_padding_function(t_mod *mod, void (*f)(t_mod *, unsigned int), int count, unsigned int num);
 void	pad_space(t_mod *mod, int count, char c);
 
-int		ft_countdigits_d(int n, int count);
-int		ft_countdigits_u(unsigned int n, int count);
-int		ft_countdigits_x(unsigned int n, int count);
+int		ft_countdigits_d(int n);
+int		ft_countdigits_u(unsigned int n);
+int		ft_countdigits_x(unsigned int n);
+int		ft_countdigits_p(unsigned long n);
 
-void	format_c(t_mod *mod, va_list *vars);
-void	format_s(t_mod *mod, va_list *vars);
-void	format_d(t_mod *mod, va_list *vars);
-void	format_u(t_mod *mod, va_list *vars);
-void	format_x(t_mod *mod, va_list *vars);
-void	format_X(t_mod *mod, va_list *vars);
-void	format_p(t_mod *mod, va_list *vars);
+void	format_c(t_mod *mod, char c);
+void	format_s(t_mod *mod, char *v_s);
+void	format_d(t_mod *mod, int num);
+void	format_u(t_mod *mod, unsigned int num);
+void	format_x(t_mod *mod, unsigned int num);
+void	format_p(t_mod *mod, unsigned long num);
 #endif

@@ -6,7 +6,7 @@
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 15:16:46 by xvislock          #+#    #+#             */
-/*   Updated: 2024/06/01 19:08:18 by xvislock         ###   ########.fr       */
+/*   Updated: 2024/06/05 12:43:57 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,24 +47,6 @@ static void the_uff(t_mod *mod, void (*f)(t_mod *, unsigned long), int count, un
 	}
 }
 
-static int	ft_countdigits_p(unsigned long n)
-{
-	int count;
-
-	count = 1;
-
-
-	if (n != 0)
-	{
-		if (n / 16 > 0)
-			while (n / 16 > 0)
-			{
-				count++;
-				n /= 16;
-			}
-	}
-	return (count);
-}
 
 static void	ft_putchar_p(t_mod *mod, unsigned long num)
 {
@@ -88,11 +70,11 @@ static void	ft_putchar_p(t_mod *mod, unsigned long num)
 	}
 	free(base);
 }
-void format_p(t_mod *mod, va_list *vars)
+void format_p(t_mod *mod, unsigned long num)
 {
-	unsigned long num;
+	;
 
-	num = va_arg(*vars, unsigned long);
+	// num = va_arg(*vars, unsigned long);
 	if (!num)
 	{
 		mod->total += write(1, "(nil)", 5);

@@ -6,14 +6,17 @@
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 13:37:25 by xvislock          #+#    #+#             */
-/*   Updated: 2024/06/05 09:32:34 by xvislock         ###   ########.fr       */
+/*   Updated: 2024/06/05 12:52:12 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	ft_countdigits_u(unsigned int n, int count)
+int	ft_countdigits_u(unsigned int n)
 {
+	int count;
+
+	count =0;
 	if (n == 4294967295)
 		return (10);
 	if (n == 0)

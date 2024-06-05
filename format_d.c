@@ -6,7 +6,7 @@
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 13:35:22 by xvislock          #+#    #+#             */
-/*   Updated: 2024/06/01 17:59:28 by xvislock         ###   ########.fr       */
+/*   Updated: 2024/06/05 12:51:58 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,21 +42,16 @@ static void	ft_putchar_d(t_mod *mod, int num)
 	}
 }
 
-void format_d(t_mod *mod, va_list *vars)
+void format_d(t_mod *mod, int num)
 {
-	int num;
 	int digit_count;
 	int char_count;
 	int is_neg;
 	int padding_len;
 
-	num = va_arg(*vars, int);
 
 	// account for number of digits in the number
-	if (num == 0)
-		digit_count = 1;
-	else
-		digit_count = ft_countdigits_d(num, 0);
+	digit_count = ft_countdigits_d(num);
 	char_count = digit_count;
 	// printf("Printing num %d which has %d digits\n", num, digit_count);
 

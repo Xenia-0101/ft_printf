@@ -6,20 +6,18 @@
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 13:16:16 by xvislock          #+#    #+#             */
-/*   Updated: 2024/06/05 10:09:04 by xvislock         ###   ########.fr       */
+/*   Updated: 2024/06/05 10:31:08 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void format_s(t_mod *mod, va_list *vars)
+void format_s(t_mod *mod, char *v_s)
 {
-	char *v_s;
 	char *s;
 	int s_len;
 	int to_free = 0;
 
-	v_s = va_arg(*vars, char *);
 	if (!v_s)
 	{
 		mod->total += write(1, "(null)", 6);
@@ -60,6 +58,6 @@ void format_s(t_mod *mod, va_list *vars)
 		mod->total += ft_strlen(s);
 	}
 	if (to_free)
-		free(s);
+	free(s);
 
 }

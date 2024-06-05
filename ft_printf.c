@@ -145,9 +145,7 @@ int record_modifier(t_mod *mod, const char *string)
 	free(modifier);
 
 	return (n);
-
 }
-
 
 int ft_printf(const char *string, ...)
 {
@@ -196,36 +194,36 @@ int ft_printf(const char *string, ...)
 	return (res);
 }
 
-
-/* #include <limits.h>
+/*
+#include <limits.h>
 int main(void)
 {
-	// int res1 = printf(">> %-2u <<\n", -1);
-	// int res11 = ft_printf(">> %-2u <<\n", -1);
-	// int res2 = printf(">> %-13u <<\n", UINT_MAX);
-	// int res22 = ft_printf(">> %-13u <<\n", UINT_MAX);
-	// int res3 = printf(">> %-1x <<\n", 0);
-	// int res33 = ft_printf(">> %-1x <<\n", 0);
+	int res1 = printf(">> %-2u <<\n", -1);
+	int res11 = ft_printf(">> %-2u <<\n", -1);
+	int res2 = printf(">> %-13u <<\n", UINT_MAX);
+	int res22 = ft_printf(">> %-13u <<\n", UINT_MAX);
+	int res3 = printf(">> %-1x <<\n", 0);
+	int res33 = ft_printf(">> %-1x <<\n", 0);
 
-	// printf("%d\t%d\t%d\n%d\t%d\t%d\n", res1, res2, res3, res11, res22, res33);
+	printf("%d\t%d\t%d\n%d\t%d\t%d\n", res1, res2, res3, res11, res22, res33);
 
-	// int rres1 = printf(">> %02u <<\n", -1);
-	// int rres11 = ft_printf(">> %02u <<\n", -1);
-	// int rres2 = printf(">> %013u <<\n", UINT_MAX);
-	// int rres22 = ft_printf(">> %013u <<\n", UINT_MAX);
-	// int rres3 = printf(">> %01x <<\n", 0);
-	// int rres33 = ft_printf(">> %01x <<\n", 0);
+	int rres1 = printf(">> %02u <<\n", -1);
+	int rres11 = ft_printf(">> %02u <<\n", -1);
+	int rres2 = printf(">> %013u <<\n", UINT_MAX);
+	int rres22 = ft_printf(">> %013u <<\n", UINT_MAX);
+	int rres3 = printf(">> %01x <<\n", 0);
+	int rres33 = ft_printf(">> %01x <<\n", 0);
 
-	// printf("%d\t%d\t%d\n%d\t%d\t%d\n", rres1, rres2, rres3, rres11, rres22, rres33);
+	printf("%d\t%d\t%d\n%d\t%d\t%d\n", rres1, rres2, rres3, rres11, rres22, rres33);
 
-	// int ares1 = printf(">> %.1u <<\n", 0);
-	// int ares11 = ft_printf(">> %.1u <<\n", 0);
-	// int ares2 = printf(">> %.11u <<\n", LONG_MIN);
-	// int ares22 = ft_printf(">> %.11u <<\n", LONG_MIN);
-	// int ares3 = printf(">> %.8u %.9u %.10u %.11u %.12u %.13u %.14u<<\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42);
-	// int ares33 = ft_printf(">> %.8u %.9u %.10u %.11u %.12u %.13u %.14u<<\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42);
+	int ares1 = printf(">> %.1u <<\n", 0);
+	int ares11 = ft_printf(">> %.1u <<\n", 0);
+	int ares2 = printf(">> %.11u <<\n", LONG_MIN);
+	int ares22 = ft_printf(">> %.11u <<\n", LONG_MIN);
+	int ares3 = printf(">> %.8u %.9u %.10u %.11u %.12u %.13u %.14u<<\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42);
+	int ares33 = ft_printf(">> %.8u %.9u %.10u %.11u %.12u %.13u %.14u<<\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42);
 
-	// printf("%d\t%d\t%d\n%d\t%d\t%d\n", ares1, ares2, ares3, ares11, ares22, ares33);
+	printf("%d\t%d\t%d\n%d\t%d\t%d\n", ares1, ares2, ares3, ares11, ares22, ares33);
 
 
 	int ress1 = printf("> %.s <\n", "-");
@@ -237,5 +235,6 @@ int main(void)
 	printf("%d\t%d\t%d\n%d\t%d\t%d\n", ress1, ress2, ress3, ress11, ress22, ress33);
 
 }
+
 
  */
