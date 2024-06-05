@@ -1,7 +1,7 @@
 
-# SOURCES		:=		$(shell find . -name '*.c')
-SOURCES		= \
-ft_printf.c \
+SOURCES		:=		$(shell find . -name '*.c')
+# SOURCES		= \
+# ft_printf.c \
 
 OBJECTS		=		$(SOURCES:.c=.o)
 HEADER		=		includes
@@ -13,6 +13,8 @@ CC			=		gcc
 AR			=		ar rc
 
 all:	${NAME}
+
+bonus: all
 
 ${NAME}: ${OBJECTS}
 	make -C $(LIBFT)

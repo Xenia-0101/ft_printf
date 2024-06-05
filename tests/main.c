@@ -3,6 +3,10 @@
 #include <stdint.h>
 #include <inttypes.h>
 
+
+
+
+
 void test_printf(void);
 
 int main(void)
@@ -50,6 +54,7 @@ int main(void)
 	ft_printf(" %c %c %c ", '2', '1', 0);
 	ft_printf(" %c %c %c ", 0, '1', '2');
 
+	
 
 	return (0);
 }
