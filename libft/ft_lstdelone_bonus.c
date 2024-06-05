@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/25 16:43:42 by xvislock          #+#    #+#             */
-/*   Updated: 2024/04/25 16:43:42 by xvislock         ###   ########.fr       */
+/*   Created: 2024/05/22 18:45:57 by xvislock          #+#    #+#             */
+/*   Updated: 2024/05/22 18:45:57 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,11 @@ void	ft_lstdelone(t_list *lst, void (*del)(void*))
 {
 	if (!del)
 		return ;
+	if (!lst->content)
+	{
+		free(lst);
+		return ;
+	}
 	del(lst->content);
 	free(lst);
 }

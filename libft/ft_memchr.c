@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/13 16:41:06 by xvislock          #+#    #+#             */
-/*   Updated: 2024/04/13 16:41:06 by xvislock         ###   ########.fr       */
+/*   Created: 2024/05/22 18:46:57 by xvislock          #+#    #+#             */
+/*   Updated: 2024/05/22 18:46:57 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,19 @@ RETURN VALUE
 void	*ft_memchr(const void *s, int c, size_t n)
 {
 	const unsigned char	*src;
+	unsigned char		cc;
+	int					i;
 
+	i = 0;
 	if (n != 0)
 	{
 		src = (const unsigned char *)s;
+		cc = (unsigned char)c;
 		while (n-- != 0)
 		{
-			if (*src++ == (char )c)
+			if (src[i++] == (int)cc)
 			{
-				return ((void *)(src - 1));
+				return ((void *)(src + i - 1));
 			}
 		}
 	}

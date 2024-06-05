@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/25 16:28:58 by xvislock          #+#    #+#             */
-/*   Updated: 2024/04/25 16:28:58 by xvislock         ###   ########.fr       */
+/*   Created: 2024/05/22 18:45:33 by xvislock          #+#    #+#             */
+/*   Updated: 2024/05/22 18:45:33 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,16 +31,15 @@
 
 void	ft_lstadd_back(t_list **lst, t_list *new)
 {
+	t_list	*t_lst;
+
 	if (!new)
 		return ;
-	if (!(*lst))
+	if (!*lst)
+	{
+		*lst = new;
 		return ;
-	if ((*lst)->next)
-	{
-		ft_lstadd_back(&(*lst)->next, new);
 	}
-	else
-	{
-		(*lst)->next = new;
-	}
+	t_lst = ft_lstlast(*lst);
+	t_lst->next = new;
 }

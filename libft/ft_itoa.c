@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/21 13:02:58 by xvislock          #+#    #+#             */
-/*   Updated: 2024/04/21 13:02:58 by xvislock         ###   ########.fr       */
+/*   Created: 2024/05/22 18:45:26 by xvislock          #+#    #+#             */
+/*   Updated: 2024/05/22 18:45:26 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,73 +29,46 @@
 
 #include "libft.h"
 
-static int	count_units(int n)
+static int	count_units(int num)
 {
-	int	units;
+	int	count;
 
-	units = 0;
-	if (n < 0)
+	count = 0;
+	if (num < 0)
+		num *= -1;
+	while (num > 0)
 	{
-		n *= -1;
-		units++;
+		num /= 10;
+		count++;
 	}
-	while (n > 0)
-	{
-		units++;
-		n /= 10;
-	}
-	return (units);
-}
-
-static char	*min_number(void)
-{
-	char	*res;
-
-	res = ft_calloc(12, sizeof (char));
-	if (!res)
-		return (NULL);
-	res[0] = '-';
-	res[1] = '2';
-	res[2] = '1';
-	res[3] = '4';
-	res[4] = '7';
-	res[5] = '4';
-	res[6] = '8';
-	res[7] = '3';
-	res[8] = '6';
-	res[9] = '4';
-	res[10] = '8';
-	return (res);
+	return (count);
 }
 
 char	*ft_itoa(int n)
 {
-	int		units;
+	int		digits;
 	char	*res;
 
 	if (n == 0)
-	{
-		res = ft_calloc(2, sizeof (char));
-		res[0] = '0';
-		return (res);
-	}
-	if (n == -2147483648)
-	{
-		res = min_number();
-		return (res);
-	}
-	units = count_units(n);
+		return (ft_strdup("0"));
+	else if (n == -2147483648)
+		return (ft_strdup("-2147483648"));
+	digits = count_units(n);
 	if (n < 0)
+	{
+		digits++;
 		n *= -1;
-	res = ft_calloc(units + 1, sizeof (char));
+	}
+	res = ft_calloc(digits + 1, sizeof (char));
 	if (!res)
 		return (NULL);
 	while (n > 0)
 	{
-		res[--units] = (n % 10) + '0';
+		res[digits - 1] = (n % 10) + '0';
 		n /= 10;
+		digits--;
 	}
-	if (units)
-		res[--units] = '-';
+	if (digits)
+		res[digits - 1] = '-';
 	return (res);
 }

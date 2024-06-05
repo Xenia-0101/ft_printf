@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/26 19:21:02 by xvislock          #+#    #+#             */
-/*   Updated: 2024/04/26 19:21:02 by xvislock         ###   ########.fr       */
+/*   Created: 2024/05/22 18:45:50 by xvislock          #+#    #+#             */
+/*   Updated: 2024/05/22 18:45:50 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,22 +32,16 @@
 
 #include "libft.h"
 
-static void	ft_lstrec(t_list **lst, void (*del)(void*))
-{
-	printf("\t\t %s\n", (char *)(*lst)->content);
-	if ((*lst)->next)
-		ft_lstrec(&(*lst)->next, del);
-	del((*lst)->content);
-	free(*lst);
-	*lst = NULL;
-}
-
 void	ft_lstclear(t_list **lst, void (*del)(void*))
 {
+	t_list	*temp;
+
 	if (!del)
 		return ;
-	// printf("Del function exists.\n");
-	// printf("Content of the first node: %s\n", (char *)(*lst)->content);
-	ft_lstrec(lst, del);
-	return ;
+	while (*lst)
+	{
+		temp = (*lst)->next;
+		ft_lstdelone(*lst, del);
+		*lst = temp;
+	}
 }

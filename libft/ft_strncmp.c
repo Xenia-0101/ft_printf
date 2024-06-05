@@ -25,14 +25,18 @@ RETURN VALUE
 
 int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
+	int	i;
+
+	i = 0;
 	if (n != 0)
 	{
-		while (n-- > 0)
+		while (n > 0)
 		{
-			if (*s1 != *s2)
-				return (*s1 - *s2);
-			s1++;
-			s2++;
+			if (((unsigned char)s1[i] != (unsigned char)s2[i])
+				|| !(unsigned char)s1[i])
+				return (((unsigned char)s1[i]) - ((unsigned char)s2[i]));
+			i++;
+			n--;
 		}
 	}
 	return (0);

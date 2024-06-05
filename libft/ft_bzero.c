@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/20 17:39:59 by xvislock          #+#    #+#             */
-/*   Updated: 2024/04/20 17:39:59 by xvislock         ###   ########.fr       */
+/*   Created: 2024/05/22 18:44:29 by xvislock          #+#    #+#             */
+/*   Updated: 2024/05/22 18:44:29 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,10 @@ void	ft_bzero(void *s, size_t n)
 	char	*temp;
 
 	temp = (char *)s;
-	while (n-- > 0)
-		*temp++ = '\0';
+	while (n > 0)
+	{
+		n--;
+		temp[n] = '\0';
+	}
 }
+

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/20 17:39:28 by xvislock          #+#    #+#             */
-/*   Updated: 2024/04/20 17:39:28 by xvislock         ###   ########.fr       */
+/*   Created: 2024/05/22 18:44:20 by xvislock          #+#    #+#             */
+/*   Updated: 2024/05/22 18:44:20 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,22 +18,24 @@ int	ft_atoi(const char *nptr)
 {
 	int	res;
 	int	sign;
+	int	i;
 
 	res = 0;
 	sign = 1;
-	while (*nptr && ft_isspace(*nptr))
+	i = 0;
+	while (nptr[i] && ft_isspace(nptr[i]))
 	{
-		nptr++;
+		i++;
 	}
-	if (*nptr == '+' || *nptr == '-')
+	if (nptr[i] == '+' || nptr[i] == '-')
 	{
-		if (*nptr == '-')
+		if (nptr[i] == '-')
 			sign = -1;
-		nptr++;
+		i++;
 	}
-	while (*nptr && ft_isdigit(*nptr))
+	while (nptr[i] && ft_isdigit(nptr[i]))
 	{
-		res = 10 * res + (*nptr - '0');
+		res = 10 * res + (nptr[i] - '0');
 		nptr++;
 	}
 	return (res * sign);

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/25 16:03:56 by xvislock          #+#    #+#             */
-/*   Updated: 2024/04/25 16:03:56 by xvislock         ###   ########.fr       */
+/*   Created: 2024/05/22 18:46:22 by xvislock          #+#    #+#             */
+/*   Updated: 2024/05/22 18:46:22 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,15 @@ Description
 #include "libft.h"
 
 t_list	*ft_lstlast(t_list *lst)
-{ 
-	if (!lst)
+{
+	t_list	*t_lst;
+
+	if (lst == NULL)
 		return (NULL);
-	if (lst->next)
+	t_lst = lst;
+	while (t_lst->next != NULL)
 	{
-		while (lst->next)
-			*lst = *lst->next;
+		t_lst = t_lst->next;
 	}
-	return (lst);
+	return (t_lst);
 }

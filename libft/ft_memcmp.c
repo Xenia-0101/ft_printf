@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/13 17:12:10 by xvislock          #+#    #+#             */
-/*   Updated: 2024/04/13 17:12:10 by xvislock         ###   ########.fr       */
+/*   Created: 2024/05/22 18:47:03 by xvislock          #+#    #+#             */
+/*   Updated: 2024/05/22 18:47:03 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,17 +33,18 @@ int	ft_memcmp(const void *s1, const void *s2, size_t n)
 {
 	unsigned const char	*t2;
 	unsigned const char	*t1;
+	size_t				i;
 
+	i = 0;
 	if (n != 0)
 	{
 		t1 = (unsigned const char *)s1;
 		t2 = (unsigned const char *)s2;
 		while (n-- > 0)
 		{
-			if (*t1 != *t2)
-				return (*t1 - *t2);
-			t1++;
-			t2++;
+			if (t1[i] != t2[i])
+				return (t1[i] - t2[i]);
+			i++;
 		}
 	}
 	return (0);

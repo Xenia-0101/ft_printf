@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/25 13:58:45 by xvislock          #+#    #+#             */
-/*   Updated: 2024/04/25 13:58:45 by xvislock         ###   ########.fr       */
+/*   Created: 2024/05/22 18:46:44 by xvislock          #+#    #+#             */
+/*   Updated: 2024/05/22 18:46:44 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,17 +28,17 @@ Description
 
 int	ft_lstsize(t_list *lst)
 {
-	int	count;
+	int		count;
+	t_list	*t_lst;
 
 	count = 0;
 	if (!lst)
 		return (count);
-	if (lst->content)
-		count++;
-	while (lst->next)
+	t_lst = lst;
+	while (t_lst)
 	{
 		count++;
-		*lst = *lst->next;
+		t_lst = t_lst->next;
 	}
 	return (count);
 }

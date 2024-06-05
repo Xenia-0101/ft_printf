@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/27 13:56:29 by xvislock          #+#    #+#             */
-/*   Updated: 2024/04/27 13:56:29 by xvislock         ###   ########.fr       */
+/*   Created: 2024/05/22 18:46:13 by xvislock          #+#    #+#             */
+/*   Updated: 2024/05/22 18:46:13 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	ft_lstiter(t_list *lst, void (*f)(void *))
 {
 	if (!f)
 		return ;
-	if (!lst->content)
+	if (!lst || !lst->content)
 		return ;
 	if (lst->next)
 		ft_lstiter(lst->next, f);

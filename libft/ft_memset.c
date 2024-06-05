@@ -24,11 +24,14 @@ RETURN VALUE
 void	*ft_memset(void *str, int c, size_t n)
 {
 	char	*temp;
+	int		i;
 
 	temp = (char *)str;
-	while (n-- > 0)
+	i = 0;
+	while (n > 0)
 	{
-		*temp++ = c;
+		temp[i++] = c;
+		n--;
 	}
 	return (str);
 }
