@@ -22,14 +22,23 @@ typedef struct s_switch
 	int		value;
 }			t_switch;
 
+typedef struct s_flag
+{
+	t_switch	zero;
+	t_switch	dash;
+	t_switch	spac;
+	t_switch	plus;
+	t_switch	hash;
+}				t_flag;
+
 typedef struct s_format_mod
 {
 	size_t		total;
-	t_switch	flag;
+	t_flag		flag;
 	t_switch	widt;
 	t_switch	prec;
 	t_switch	spec;
-}	t_mod;
+}				t_mod;
 
 int		ft_printf(const char *string, ...);
 void	decide_format(t_mod *mod, va_list *vars);

@@ -29,7 +29,8 @@ int is_specifier(char c)
 
 int is_flag(char c)
 {
-	return ((c == '-') | (c == '0') | (c == '#'));
+	return ((c == '-') | (c == '0') | (c == '#')
+			| (c == ' ') | (c == '+'));
 }
 
 void analyse_mod(t_mod *mod, char *modifier)
@@ -37,10 +38,28 @@ void analyse_mod(t_mod *mod, char *modifier)
 	int n;
 
 	n = 0;
-	if (is_flag(modifier[n]))
+	while (is_flag(modifier[n]))
 	{
-		(mod->flag.exists) = 1;
-		(mod->flag.value) = modifier[n];
+		if (modifier[n] == '0')
+		{
+			mod->flag.zero.exists = 1;
+		}
+		else if (modifier[n] == '-')
+		{
+			mod->flag.dash.exists = 1;
+		}
+		else if (modifier[n] == ' ')
+		{
+			mod->flag.spac.exists = 1;
+		}
+		else if (modifier[n] == '+')
+		{
+			mod->flag.plus.exists = 1;
+		}
+		else if (modifier[n] == '#')
+		{
+			mod->flag.hash.exists = 1;
+		}
 		n++;
 	}
 	if (ft_isdigit(modifier[n]))
