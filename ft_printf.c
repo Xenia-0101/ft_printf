@@ -142,17 +142,11 @@ void print_mod(t_mod *mod)
 	if (mod->flag.hash)
 		printf("mod->flag.hash: %d\n", mod->flag.hash);
 	if (mod->widt.exists)
-	{
 		printf("mod->widt.value: %d\n", mod->widt.value);
-	}
 	if (mod->prec.exists)
-	{
 		printf("mod->prec.value: %d\n", mod->prec.value);
-	}
 	if (mod->spec.exists)
-	{
 		printf("mod->spec.value: %c\n", mod->spec.value);
-	}
 }
 
 int record_modifier(t_mod *mod, const char *string)
@@ -226,11 +220,77 @@ int ft_printf(const char *string, ...)
 }
 
 
-#include <limits.h>
-int main(void)
-{
-	ft_printf("Hello %+0 -15.5d, the answer is %s.\n", 42, "You");
-}
+// #include <limits.h>
+// int main(void)
+// {
+// 	printf("> %d <\n", 0);
+// 	ft_printf("> %d <\n\n", 0);
+// 	printf("> %d <\n", -1);
+// 	ft_printf("> %d <\n\n", -1);
+// 	printf("> %d <\n", 1);
+// 	ft_printf("> %d <\n\n", 1);
+// 	printf("> %d <\n", 9);
+// 	ft_printf("> %d <\n\n", 9);
+// 	printf("> %d <\n", 10);
+// 	ft_printf("> %d <\n\n", 10);
+// 	printf("> %d <\n", 11);
+// 	ft_printf("> %d <\n\n", 11);
+// 	printf("> %d <\n", 15);
+// 	ft_printf("> %d <\n\n", 15);
+// 	printf("> %d <\n", 16);
+// 	ft_printf("> %d <\n\n", 16);
+// 	printf("> %d <\n", 17);
+// 	ft_printf("> %d <\n\n", 17);
+// 	printf("> %d <\n", 99);
+// 	ft_printf("> %d <\n\n", 99);
+// 	printf("> %d <\n", 100);
+// 	ft_printf("> %d <\n\n", 100);
+// 	printf("> %d <\n", 101);
+// 	ft_printf("> %d <\n\n", 101);
+// 	printf("> %d <\n", -9);
+// 	ft_printf("> %d <\n\n", -9);
+// 	printf("> %d <\n", -10);
+// 	ft_printf("> %d <\n\n", -10);
+// 	printf("> %d <\n", -11);
+// 	ft_printf("> %d <\n\n", -11);
+// 	printf("> %d <\n", -14);
+// 	ft_printf("> %d <\n\n", -14);
+// 	printf("> %d <\n", -15);
+// 	ft_printf("> %d <\n\n", -15);
+// 	printf("> %d <\n", -16);
+// 	ft_printf("> %d <\n\n", -16);
+// 	printf("> %d <\n", -99);
+// 	ft_printf("> %d <\n\n", -99);
+// 	printf("> %d <\n", -100);
+// 	ft_printf("> %d <\n\n", -100);
+// 	printf("> %d <\n", -101);
+// 	ft_printf("> %d <\n\n", -101);
+// 	printf("> %d <\n", INT_MAX);
+// 	ft_printf("> %d <\n\n", INT_MAX);
+// 	printf("> %d <\n", INT_MIN);
+// 	ft_printf("> %d <\n\n", INT_MIN);
+// 	printf("> %d <\n", LONG_MAX);
+// 	ft_printf("> %d <\n\n", LONG_MAX);
+// 	printf("> %d <\n", LONG_MIN);
+// 	ft_printf("> %d <\n\n", LONG_MIN);
+// 	printf("> %d <\n", UINT_MAX);
+// 	ft_printf("> %d <\n\n", UINT_MAX);
+// 	printf("> %d <\n", ULONG_MAX);
+// 	ft_printf("> %d <\n\n", ULONG_MAX);
+// 	printf("> %d <\n", 9223372036854775807LL);
+// 	ft_printf("> %d <\n\n", 9223372036854775807LL);
+// 	printf("> %d %d %d %d %d %d %d<\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42);
+// 	ft_printf("> %d %d %d %d %d %d %d<\n\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42);
+
+
+
+// 	printf("> %.2d <\n", -1);
+// 	ft_printf("> %.2d <\n\n", -1);
+// 	printf("> %.1d <\n", -9);
+// 	ft_printf("> %.1d <\n\n", -9);
+
+// 	return (0);
+// }
 
 
 

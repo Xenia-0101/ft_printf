@@ -1,5 +1,5 @@
 
-SOURCES		:=		$(shell find . -name '*.c')
+SOURCES		:=		$(shell find . -name '*.c' )
 # SOURCES		= \
 # ft_printf.c \
 
