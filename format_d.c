@@ -6,7 +6,7 @@
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 13:35:22 by xvislock          #+#    #+#             */
-/*   Updated: 2024/06/06 21:48:10 by xvislock         ###   ########.fr       */
+/*   Updated: 2024/06/07 17:00:37 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,8 @@ void format_d(t_mod *mod, int num)
 	char_count += (mod->flag.plus | mod->flag.spac | is_neg);
 
 	// account for width - add padding to the number
-	padding_len = mod->widt.value - char_count + is_neg;
-	// printf("\n\n%d\t%d\t%d\t%d\n\n", digit_count, char_count, mod->prec.value, is_neg);
+	padding_len = mod->widt.value - char_count;
+	// printf("\n\n%d\t%d\t%d\t%d\n\n", digit_count, char_count, padding_len, is_neg);
 	if (mod->flag.dash)
 	{
 		if (is_neg)
