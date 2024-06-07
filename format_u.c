@@ -6,7 +6,7 @@
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 13:31:52 by xvislock          #+#    #+#             */
-/*   Updated: 2024/06/06 18:21:54 by xvislock         ###   ########.fr       */
+/*   Updated: 2024/06/08 00:01:14 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,15 @@ static void the_uff(t_mod *mod, void (*f)(t_mod *, unsigned int), int count, uns
 {
 	int char_count;
 
-	// printf("*CHARS: %d*", count);
 	char_count = count;
-	// account for precision - determine min number of digits printed
 	if (mod->prec.exists && mod->prec.value > count)
 		char_count = mod->prec.value;
-	// account for width - add padding to the number
 	int padding_len = mod->widt.value - char_count;
 	if (mod->flag.dash)
 	{
-			pad_space(mod, mod->prec.value - count, '0');
-			f(mod, num);
-			pad_space(mod, padding_len, ' ');
+		pad_space(mod, mod->prec.value - count, '0');
+		f(mod, num);
+		pad_space(mod, padding_len, ' ');
 	}
 	else
 	{
