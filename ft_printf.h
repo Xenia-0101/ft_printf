@@ -56,4 +56,5 @@ void	format_d(t_mod *mod, int num);
 void	format_u(t_mod *mod, unsigned int num);
 void	format_x(t_mod *mod, unsigned int num);
 void	format_p(t_mod *mod, unsigned long num);
+void	format_percent(t_mod *mod);
 #endif

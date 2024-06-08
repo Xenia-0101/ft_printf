@@ -6,7 +6,7 @@
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 13:13:55 by xvislock          #+#    #+#             */
-/*   Updated: 2024/06/06 21:02:37 by xvislock         ###   ########.fr       */
+/*   Updated: 2024/06/08 16:48:48 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,9 @@ void decide_format(t_mod *mod, va_list *vars)
 	else if ((mod->spec.value == 'x') | (mod->spec.value == 'X'))
 	{
 		format_x(mod, va_arg(*vars, unsigned int));
+	}
+	else if ((mod->spec.value == '%'))
+	{
+		format_percent(mod);
 	}
 }

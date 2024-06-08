@@ -16,11 +16,11 @@
 
 int is_specifier(char c)
 {
-	char	*specs = "cspdiuxX";
+	char	*specs = "cspdiuxX%";
 	int		i;
 
 	i = 0;
-	while (i < 8)
+	while (i < 9)
 	{
 		if (c == specs[i++])
 			return (1);
@@ -158,16 +158,21 @@ int record_modifier(t_mod *mod, const char *string)
 	char *start;
 	char *modifier;
 
+
 	n = 0;
 	start = ft_strchr(string, '%');
 	// get char count of modifier
+	n++;
 	while (!is_specifier(start[n]))
 	{
 		n++;
 	}
+	// printf("\n%d\n", n);
+	// printf("qq %c %c %c qq\n", start[0], start[1], start[n]);
 	// printf("\nchars in modifier: %d\n", mod_len);
 	modifier = ft_calloc(n + 1, sizeof (char));
 	ft_memcpy(modifier, start + 1, n);
+	// printf("\nqq%sqq\n", modifier);
 	// printf("modifier: %s\n", modifier);
 	// analyse modifier
 	analyse_mod(mod, modifier);
@@ -205,7 +210,6 @@ int ft_printf(const char *string, ...)
 			else
 			{
 				n += record_modifier(mod, (string + n)) + 1;
-				// print_mod(mod);
 				decide_format(mod, &vars);
 				restore_mod(mod);
 			}
@@ -222,32 +226,31 @@ int ft_printf(const char *string, ...)
 	return (res);
 }
 
-
+/*
 #include <limits.h>
-// #include ".tests/test_d.c"
+#include ".tests/test_d.c"
 // // #include ".tests/test_p.c"
 // #include ".tests/test_x.c"
 
 int main(void)
 {
-	// // test the behaviour with NULL
-	// c1 = printf(" >>%.03p<<>>%.3p<<>>%3.1p<<>>%9.1p<<>>%-3.1p<<\n", NULL, NULL, NULL, NULL, NULL);
-	// c2 = ft_printf("*>>%.03p<<>>%.3p<<>>%3.1p<<>>%9.1p<<>>%-3.1p<<\n", NULL, NULL, NULL, NULL, NULL);
-	// printf("\t%d|%d\n", c1, c2);
+	int c1, c2;
 
-	// c1 = printf(" >>%23p<<>>%.p<<>>%32p<<>>%5p<<>>%6p<<\n", NULL, NULL, NULL, NULL, NULL);
-	// c2 = ft_printf("*>>%23p<<>>%.p<<>>%32p<<>>%5p<<>>%6p<<\n", NULL, NULL, NULL, NULL, NULL);
-	// printf("\t%d|%d\n", c1, c2);
-
-	// c1 = printf(" >>%.09p<<>>%.9p<<>>%3.6p<<>>%20.6p<<>>%-3.8p<<>>%-10.8p<<\n", NULL, NULL, NULL, NULL, NULL, NULL);
-	// c2 = ft_printf("*>>%.09p<<>>%.9p<<>>%3.6p<<>>%20.6p<<>>%-3.8p<<>>%-10.8p<<\n", NULL, NULL, NULL, NULL, NULL, NULL);
-	// printf("\t%d|%d\n", c1, c2);
-
-	// ft_printf(">>%5%");
-	// ft_printf(">>%-5%");
-	// ft_printf(">>%05%");
-	// ft_printf(">>%-05%");
-	// ft_printf(">>%010%");
+	c1 = printf(" >>%5%<<\n");
+	c2 = ft_printf("*>>%5%<<\n");
+	printf("\t%d|%d\n", c1, c2);
+	c1 = printf(" >>%-5%<<\n");
+	c2 = ft_printf("*>>%-5%<<\n");
+	printf("\t%d|%d\n", c1, c2);
+	c1 = printf(" >>%05%<<\n");
+	c2 = ft_printf("*>>%05%<<\n");
+	printf("\t%d|%d\n", c1, c2);
+	c1 = printf(" >>%-05%<<\n");
+	c2 = ft_printf("*>>%-05%<<\n");
+	printf("\t%d|%d\n", c1, c2);
+	c1 = printf(" >>%010%<<\n");
+	c2 = ft_printf("*>>%010%<<\n");
+	printf("\t%d|%d\n", c1, c2);
 	// ft_printf(">>percent 1 %012%");
 	// ft_printf(">>percent 2 %12%");
 	// ft_printf(">>percent 3 %-12%");
@@ -280,6 +283,19 @@ int main(void)
 	// printf("\t%d|%d\n", c1, c2);
 
 
+	// c1 = printf(" >>%.03p<<>>%.3p<<>>%3.1p<<>>%9.1p<<>>%-3.1p<<\n", NULL, NULL, NULL, NULL, NULL);
+	// c2 = ft_printf("*>>%.03p<<>>%.3p<<>>%3.1p<<>>%9.1p<<>>%-3.1p<<\n", NULL, NULL, NULL, NULL, NULL);
+	// printf("\t%d|%d\n", c1, c2);
+
+	// c1 = printf(" >>%23p<<>>%.p<<>>%32p<<>>%5p<<>>%6p<<\n", NULL, NULL, NULL, NULL, NULL);
+	// c2 = ft_printf("*>>%23p<<>>%.p<<>>%32p<<>>%5p<<>>%6p<<\n", NULL, NULL, NULL, NULL, NULL);
+	// printf("\t%d|%d\n", c1, c2);
+
+	// c1 = printf(" >>%.09p<<>>%.9p<<>>%3.6p<<>>%20.6p<<>>%-3.8p<<>>%-10.8p<<\n", NULL, NULL, NULL, NULL, NULL, NULL);
+	// c2 = ft_printf("*>>%.09p<<>>%.9p<<>>%3.6p<<>>%20.6p<<>>%-3.8p<<>>%-10.8p<<\n", NULL, NULL, NULL, NULL, NULL, NULL);
+	// printf("\t%d|%d\n", c1, c2);
+
+
 	// char *str = NULL;
 	// int res = write(1, str, sizeof(str));
 	// printf("%d", res);
@@ -304,7 +320,8 @@ int main(void)
 	// c2 = ft_printf("*>>%u<<>>%10u<<>>%10.5u<<>>%10.0u<<>>%10.u<<\n", 0, 0, 0, 0, 0, 0);
 	// printf("\t%d|%d\n", c1, c2);
 
-	// test_d();
+	test_d();
 }
 // gcc *.c ./libft/libft.a && ./a.out
 
+ */
