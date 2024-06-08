@@ -6,78 +6,17 @@
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 15:16:46 by xvislock          #+#    #+#             */
-/*   Updated: 2024/06/06 20:57:36 by xvislock         ###   ########.fr       */
+/*   Updated: 2024/06/08 16:38:55 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static void the_uff(t_mod *mod, void (*f)(t_mod *, unsigned long), int count, unsigned long num)
-{
-	int char_count;
-	int padding_len;
-
-	char_count = count + 2;
-	// account for precision - determine min number of digits printed
-	if (mod->prec.exists && mod->prec.value > char_count)
-		char_count = mod->prec.value;
-	char_count += mod->flag.plus | mod->flag.spac;
-	// account for width - add padding to the number
-	padding_len = mod->widt.value - char_count;
-	if (mod->flag.dash)
-	{
-		if (mod->flag.plus)
-		{
-			mod->total += write(1, "+", 1);
-		}
-		else if (mod->flag.spac)
-		{
-			mod->total += write(1, " ", 1);
-		}
-		mod->total += write(1, "0x", 2);
-		pad_space(mod, mod->prec.value - count, '0');
-		f(mod, num);
-		pad_space(mod, padding_len, ' ');
-	}
-	else
-	{
-		if (mod->flag.zero)
-		{
-			if (mod->flag.plus)
-			{
-				mod->total += write(1, "+", 1);
-			}
-			else if (mod->flag.spac)
-			{
-				mod->total += write(1, " ", 1);
-			}
-			mod->total += write(1, "0x", 2);
-			pad_space(mod, padding_len, '0');
-		}
-		else
-		{
-			pad_space(mod, padding_len, ' ');
-			if (mod->flag.plus)
-			{
-				mod->total += write(1, "+", 1);
-			}
-			else if (mod->flag.spac)
-			{
-				mod->total += write(1, " ", 1);
-			}
-			mod->total += write(1, "0x", 2);
-		}
-		pad_space(mod, mod->prec.value - count, '0');
-		f(mod, num);
-	}
-}
-
-
 static void	ft_putchar_p(t_mod *mod, unsigned long num)
 {
-	char *base;
-	char digit;
-	int	m;
+	char	*base;
+	char	digit;
+	int		m;
 
 	base = ft_strdup("0123456789abcdef");
 	if (num == 0)
@@ -95,13 +34,75 @@ static void	ft_putchar_p(t_mod *mod, unsigned long num)
 	}
 	free(base);
 }
-void format_p(t_mod *mod, unsigned long num)
+static void	ft_putsign(t_mod *mod)
 {
-	// num = va_arg(*vars, unsigned long);
-	if (!num)
+	if (mod->flag.plus)
+	{
+		mod->total += write(1, "+", 1);
+	}
+	else if (mod->flag.spac)
+	{
+		mod->total += write(1, " ", 1);
+	}
+	mod->total += write(1, "0x", 2);
+}
+
+static void	the_uff(t_mod *mod, unsigned long num, int prec_c, int padd_c)
+{
+	if (mod->flag.dash)
+	{
+		pad_space(mod, prec_c, '0');
+		ft_putsign(mod);
+		ft_putchar_p(mod, num);
+		pad_space(mod, padd_c, ' ');
+	}
+	else
+	{
+		if (mod->flag.zero)
+		{
+			ft_putsign(mod);
+			pad_space(mod, padd_c, '0');
+		}
+		else
+		{
+			pad_space(mod, padd_c, ' ');
+			ft_putsign(mod);
+		}
+		pad_space(mod, prec_c, '0');
+		ft_putchar_p(mod, num);
+	}
+}
+
+static void the_nil_uff(t_mod *mod)
+{
+	if (mod->flag.dash)
 	{
 		mod->total += write(1, "(nil)", 5);
-		return ;
+		pad_space(mod, mod->widt.value - 5, ' ');
 	}
-	the_uff(mod, &ft_putchar_p, ft_countdigits_p(num), num);
+	else
+	{
+		pad_space(mod, mod->widt.value - 5, ' ');
+		mod->total += write(1, "(nil)", 5);
+	}
+}
+void	format_p(t_mod *mod, unsigned long num)
+{
+	int	char_count;
+	int	prec_count;
+	int	padding_len;
+
+	if (!num)
+	{
+		the_nil_uff(mod);
+	}
+	else
+	{
+		char_count = ft_countdigits_p(num) + 2 + (mod->flag.plus | mod->flag.spac);
+		prec_count = mod->prec.value - char_count;
+		if (prec_count < 0)
+			prec_count = 0;
+		padding_len = mod->widt.value - char_count - prec_count;
+		the_uff(mod, num, prec_count, padding_len);
+	}
 }

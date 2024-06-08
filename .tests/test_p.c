@@ -1,4 +1,5 @@
-/* int main(void)
+
+void test_p(void)
 {
 	char *str = "string";
 	char c = 'c';
@@ -12,7 +13,5 @@
 
 	printf(">>% 025p<<>>% +25p<<>>%-+25p<<\n", str, &c, &num);
 	ft_printf(">>% 025p<<>>%+ 25p<<>>%-+25p<<\n\n", str, &c, &num);
-
-	return (0);
 }
- */
+

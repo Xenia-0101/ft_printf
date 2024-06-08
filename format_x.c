@@ -6,7 +6,7 @@
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 13:21:01 by xvislock          #+#    #+#             */
-/*   Updated: 2024/06/07 23:52:59 by xvislock         ###   ########.fr       */
+/*   Updated: 2024/06/08 14:07:18 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,30 +14,30 @@
 
 static void	ft_putchar_x(t_mod *mod, unsigned int num)
 {
-	char	*base;
+	char	base[17];
 	char	digit;
 	int		m;
 
-	if (mod->spec.value == 'X')
-		base = ft_strdup("0123456789ABCDEF");
-	else
-		base = ft_strdup("0123456789abcdef");
-	if (num == 0)
+	if (!(mod->prec.exists && mod->prec.value == 0 && num == 0))
 	{
-		write(1, "0", 1);
-		mod->total++;
+		if (mod->spec.value == 'X')
+			ft_strlcpy(base, "0123456789ABCDEF", 17);
+		else
+			ft_strlcpy(base, "0123456789abcdef", 17);
+		if (num == 0)
+		{
+			mod->total += write(1, "0", 1);
+		}
+		else
+		{
+			if (num / 16 > 0)
+				ft_putchar_x(mod, num / 16);
+			m = num % 16;
+			digit = base[m];
+			mod->total += write(1, &digit, 1);
+			num /= 16;
+		}
 	}
-	else
-	{
-		if (num / 16 > 0)
-			ft_putchar_x(mod, num / 16);
-		m = num % 16;
-		digit = base[m];
-		write(1, &digit, 1);
-		mod->total++;
-		num /= 16;
-	}
-	free(base);
 }
 
 static void	the_uff(t_mod *mod, unsigned int num, char *h, int prec_c, int padd_c)
@@ -86,6 +86,10 @@ void	format_x(t_mod *mod, unsigned int num)
 
 	char_count = ft_countdigits_x(num) + 2 * mod->flag.hash;
 	prec_count = mod->prec.value - ft_countdigits_x(num);
+	if (prec_count < 0)
+		prec_count = 0;
 	padding_len = mod->widt.value - prec_count - char_count;
+	padding_len += (mod->prec.exists && mod->prec.value == 0 && num == 0);
+	// printf("\n\n%d\t%d\t%d\n\n", char_count, prec_count, padding_len);
 	the_uff(mod, num, p_hash, prec_count, padding_len);
 }

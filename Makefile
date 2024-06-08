@@ -1,5 +1,5 @@
 
-SOURCES		:=		$(shell find . -name '*.c' )
+SOURCES		:=		$(shell find . -maxdepth 1 -name '*.c' )
 # SOURCES		= \
 # ft_printf.c \
 
@@ -36,5 +36,10 @@ fclean: clean
 
 re: fclean all clean
 	make clean -C $(LIBFT)
+
+lib:
+	make -C $(LIBFT)
+	cp libft/libft.a ./
+	mv libft.a $(NAME)
 
 .PHONY: all clean fclean re
