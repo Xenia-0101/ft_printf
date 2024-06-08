@@ -1,4 +1,6 @@
-/* int main(void)
+
+
+void test_d(void)
 {
 	//	Testing d
 	int num1 = 789;
@@ -87,6 +89,5 @@
 	printf("combine - and 0\n");
 	printf(" > %-05d <> %0-5d <\n", num1, num1);
 	ft_printf("*> %-05d <> %0-5d <\n\n", num1, num1);
-	return (0);
 }
- */
+

@@ -6,7 +6,7 @@
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 13:34:10 by xvislock          #+#    #+#             */
-/*   Updated: 2024/06/05 20:01:03 by xvislock         ###   ########.fr       */
+/*   Updated: 2024/06/08 09:17:06 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ void format_c(t_mod *mod, unsigned char c)
 {
 	int c_len;
 
-	// char is promoted to int when passed through '...'
 	c_len = 1;
 	if (mod->widt.exists)
 	{
