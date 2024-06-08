@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 20:28:29 by xvislock          #+#    #+#             */
-/*   Updated: 2024/05/10 20:28:29 by xvislock         ###   ########.fr       */
+/*   Updated: 2024/06/08 21:40:25 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <string.h>
 
 
-int is_specifier(char c)
+static int is_specifier(char c)
 {
 	char	*specs = "cspdiuxX%";
 	int		i;
@@ -28,14 +28,14 @@ int is_specifier(char c)
 	return (0);
 }
 
-int is_flag(char c)
+static int is_flag(char c)
 {
 	return ((c == '-') | (c == '0') | (c == '#')
 			| (c == ' ') | (c == '+'));
 }
 
 
-void analyse_mod(t_mod *mod, char *modifier)
+static void analyse_mod(t_mod *mod, char *modifier)
 {
 	int n;
 
@@ -94,7 +94,7 @@ void analyse_mod(t_mod *mod, char *modifier)
 	}
 }
 
-void init_mod(t_mod *mod)
+static void init_mod(t_mod *mod)
 {
 	mod->total = 0;
 
@@ -114,7 +114,7 @@ void init_mod(t_mod *mod)
 	mod->spec.value = 0;
 }
 
-void restore_mod(t_mod *mod)
+static void restore_mod(t_mod *mod)
 {
 	mod->flag.dash = 0;
 	mod->flag.zero = 0;
@@ -158,26 +158,17 @@ int record_modifier(t_mod *mod, const char *string)
 	char *start;
 	char *modifier;
 
-
 	n = 0;
 	start = ft_strchr(string, '%');
-	// get char count of modifier
 	n++;
 	while (!is_specifier(start[n]))
 	{
 		n++;
 	}
-	// printf("\n%d\n", n);
-	// printf("qq %c %c %c qq\n", start[0], start[1], start[n]);
-	// printf("\nchars in modifier: %d\n", mod_len);
 	modifier = ft_calloc(n + 1, sizeof (char));
 	ft_memcpy(modifier, start + 1, n);
-	// printf("\nqq%sqq\n", modifier);
-	// printf("modifier: %s\n", modifier);
-	// analyse modifier
 	analyse_mod(mod, modifier);
 	free(modifier);
-
 	return (n);
 }
 
@@ -228,77 +219,148 @@ int ft_printf(const char *string, ...)
 
 /*
 #include <limits.h>
-#include ".tests/test_d.c"
-// // #include ".tests/test_p.c"
-// #include ".tests/test_x.c"
 
 int main(void)
 {
 	int c1, c2;
+	int num1 = 789;
+	int num2 = -123;
 
-	c1 = printf(" >>%5%<<\n");
-	c2 = ft_printf("*>>%5%<<\n");
+	printf("BASIC INPUT d\n");
+	c1 = printf("  %d  %d  %d  %d  %d \n", num1, num2, INT_MAX, INT_MIN, 0);
+	c2 = ft_printf("* %d  %d  %d  %d  %d \n", num1, num2, INT_MAX, INT_MIN, 0);
 	printf("\t%d|%d\n", c1, c2);
-	c1 = printf(" >>%-5%<<\n");
-	c2 = ft_printf("*>>%-5%<<\n");
+
+	printf("BASIC INPUT i\n");
+	c1 = printf("  %d  %d  %d  %d  %d \n", num1, num2, INT_MAX, INT_MIN, 0);
+	c2 = ft_printf("* %d  %d  %d  %d  %d \n", num1, num2, INT_MAX, INT_MIN, 0);
 	printf("\t%d|%d\n", c1, c2);
-	c1 = printf(" >>%05%<<\n");
-	c2 = ft_printf("*>>%05%<<\n");
+
+	printf("\n\nBASIC INPUT p\n");
+	c1 = printf(" >> %p <<>> %p <<>> %p <<>> %p %p <<>> %p %p <<>> %p %p <<>> %p %p <<\n", -1, 1, 15, LONG_MIN, LONG_MAX, INT_MIN, INT_MAX, ULONG_MAX, -ULONG_MAX, 0, 0);
+	c2 = ft_printf("*>> %p <<>> %p <<>> %p <<>> %p %p <<>> %p %p <<>> %p %p <<>> %p %p <<\n", -1, 1, 15, LONG_MIN, LONG_MAX, INT_MIN, INT_MAX, ULONG_MAX, -ULONG_MAX, 0, 0);
 	printf("\t%d|%d\n", c1, c2);
-	c1 = printf(" >>%-05%<<\n");
-	c2 = ft_printf("*>>%-05%<<\n");
+
+	printf("\n\nBASIC INPUT c\n");
+	c1 = printf(" >>%c<>%c<>%c<>%c<>%c<>%c<>%c<>%c %c %c<\n", '0', '0' - 256, '0' + 256, 0, '1', ' ', '2', 55, '\0', 23);
+	c2 = printf("*>>%c<>%c<>%c<>%c<>%c<>%c<>%c<>%c %c %c<\n", '0', '0' - 256, '0' + 256, 0, '1', ' ', '2', 55, '\0', 23);
 	printf("\t%d|%d\n", c1, c2);
-	c1 = printf(" >>%010%<<\n");
-	c2 = ft_printf("*>>%010%<<\n");
+
+	printf("\n\nBASIC INPUT s\n");
+	c1 = printf(" >>%s<>%s<<>>%s %s %s<<>>%s\n","abc", "123", "", " ", "  ", NULL);
+	c2 = ft_printf("*>>%s<>%s<<>>%s %s %s<<>>%s\n","abc", "123", "", " ", "  ", NULL);
 	printf("\t%d|%d\n", c1, c2);
-	// ft_printf(">>percent 1 %012%");
-	// ft_printf(">>percent 2 %12%");
-	// ft_printf(">>percent 3 %-12%");
-	// ft_printf(">>percent 4 %0%");
-	// ft_printf(">>%-192.131%");
-	// ft_printf(">>%-70.193x%-140c%168c%026.51%%0125.119X" ,1102840003u,-50,-17,3721437512u);
-	// ft_printf(">>%10c%0036.99%" ,9);
-	// ft_printf(">>%-50c%-85.157%%--58.188X" ,9,274691972u);
-	// ft_printf(">>%-132.186x%00129.46%%-191.181X%-75.123d%0033.123u" ,2222238685u,3146675666u,251185067,3453417465u);
-	// ft_printf(">>%--198.101X%0145.12%%172c" ,935976394u,-118);
-	// ft_printf(">>%52c%00040.166%%-131c%-12.99s" ,-57,123,"k\r/ULCoKi0");
-	// ft_printf(">>%-175.96%%-153.x" ,822360617u);
-	// ft_printf(">>%-166.180X%--18.47d%---111.87%%8p%0114.24X" ,1637127682u,-1931431309,(void*)3522468094256045905lu,4291674618u);
-	// ft_printf(">>%-55.46%%--171.99s%--56.41X%-173X" ,"7",3917830995u,3557113666u);
-	// ft_printf(">>%--85.97%%---129c" ,33);
-	// ft_printf(">>%-58.131%");
 
-	// // test the behaviour with NULL
-	// c1 = printf(" >>%.03s<<>>%.3s<<>>%3.1s<<>>%9.1s<<>>%-3.1s<<\n", NULL, NULL, NULL, NULL, NULL);
-	// c2 = ft_printf("*>>%.03s<<>>%.3s<<>>%3.1s<<>>%9.1s<<>>%-3.1s<<\n", NULL, NULL, NULL, NULL, NULL);
-	// printf("\t%d|%d\n", c1, c2);
+	printf("\n\nBASIC INPUT u\n");
+	c1 = printf("<%u>>%u<<>>%u<<>>%u<<%u>>%u<<%u>>%u<<>>%u<<>>%u>%u\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, UINT_MAX, 0, -42, 42, LLONG_MAX, LLONG_MIN);
+	c2 = ft_printf("<%u>>%u<<>>%u<<>>%u<<%u>>%u<<%u>>%u<<>>%u<<>>%u>%u\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, UINT_MAX, 0, -42, 42, LLONG_MAX, LLONG_MIN);
+	printf("\t%d|%d\n", c1, c2);
+
+	printf("\n\nBASIC INPUT x and X\n");
+	c1 = printf("<%x>>%X<<>>%x<<>>%X<<%x>>%X<<%x>>%X<<>>%x<<>>%X>%x\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, UINT_MAX, 0, -42, 42, LLONG_MAX, LLONG_MIN);
+	c2 = ft_printf("<%x>>%X<<>>%x<<>>%X<<%x>>%X<<%x>>%X<<>>%x<<>>%X>%x\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, UINT_MAX, 0, -42, 42, LLONG_MAX, LLONG_MIN);
+	printf("\t%d|%d\n", c1, c2);
+
+	printf("\n\nBASIC INPUT %%\n");
+	c1 = printf("%% %% %%%% %%%%%% %%\n");
+	c2 = ft_printf("%% %% %%%% %%%%%% %%\n");
+	printf("\t%d|%d\n", c1, c2);
 
 
-	// c1 = printf(" >>%23s<<>>%.s<<>>%32s<<>>%5s<<>>%6s<<\n", NULL, NULL, NULL, NULL, NULL);
-	// c2 = ft_printf("*>>%23s<<>>%.s<<>>%32s<<>>%5s<<>>%6s<<\n", NULL, NULL, NULL, NULL, NULL);
-	// printf("\t%d|%d\n", c1, c2);
+	printf("\n\n. d\n");
+	c1 = printf(" > %.5d <> %.5d <> %.5d <> %.5d <> %.d <> %.0d <> %.0d <\n", 12, 123, 12345, 123456789, 123, 123, 0);
+	c2 = ft_printf(" > %.5d <> %.5d <> %.5d <> %.5d <> %.d <> %.0d <> %.0d <\n", 12, 123, 12345, 123456789, 123, 123, 0);
+	printf("\t%d|%d\n", c1, c2);
 
-	// c1 = printf(" >>%.09s<<>>%.9s<<>>%3.6s<<>>%20.6s<<>>%-3.8s<<>>%-10.8s<<\n", NULL, NULL, NULL, NULL, NULL, NULL);
-	// c2 = ft_printf("*>>%.09s<<>>%.9s<<>>%3.6s<<>>%20.6s<<>>%-3.8s<<>>%-10.8s<<\n", NULL, NULL, NULL, NULL, NULL, NULL);
-	// printf("\t%d|%d\n", c1, c2);
+	c1 = printf(" > %.15d <> %.5d <> %.5d <> %.5d <> %.d <> %.0d <> %.0d <\n", INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42, LLONG_MAX);
+	c2 = ft_printf(" > %.15d <> %.5d <> %.5d <> %.5d <> %.d <> %.0d <> %.0d <\n", INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42, LLONG_MAX);
+	printf("\t%d|%d\n", c1, c2);
+
+	printf("\n\n. i\n");
+	c1 = printf(" > %.5i <> %.5i <> %.5i <> %.5i <> %.i <> %.0i <> %.0i <\n", 12, 123, 12345, 123456789, 123, 123, 0);
+	c2 = ft_printf(" > %.5i <> %.5i <> %.5i <> %.5i <> %.i <> %.0i <> %.0i <\n", 12, 123, 12345, 123456789, 123, 123, 0);
+	printf("\t%d|%d\n", c1, c2);
+
+	c1 = printf(" > %.15i <> %.5i <> %.5i <> %.5i <> %.i <> %.0i <> %.0i <\n", INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42, LLONG_MAX);
+	c2 = ft_printf(" > %.15i <> %.5i <> %.5i <> %.5i <> %.i <> %.0i <> %.0i <\n", INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42, LLONG_MAX);
+	printf("\t%d|%d\n", c1, c2);
+
+	printf("\n\n. u\n");
+	c1 = printf(" > %.5u <> %.5u <> %.5u <> %.5u <> %.u <> %.0u <> %.0u <\n", 12, 123, 12345, 123456789, 123, 123, 0);
+	c2 = ft_printf(" > %.5u <> %.5u <> %.5u <> %.5u <> %.u <> %.0u <> %.0u <\n", 12, 123, 12345, 123456789, 123, 123, 0);
+	printf("\t%d|%d\n", c1, c2);
+
+	c1 = printf(" > %.15u <> %.5u <> %.5u <> %.5u <> %.u <> %.0u <> %.0u <\n", INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42, LLONG_MAX);
+	c2 = ft_printf(" > %.15u <> %.5u <> %.5u <> %.5u <> %.u <> %.0u <> %.0u <\n", INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42, LLONG_MAX);
+	printf("\t%d|%d\n", c1, c2);
 
 
-	// c1 = printf(" >>%.03p<<>>%.3p<<>>%3.1p<<>>%9.1p<<>>%-3.1p<<\n", NULL, NULL, NULL, NULL, NULL);
-	// c2 = ft_printf("*>>%.03p<<>>%.3p<<>>%3.1p<<>>%9.1p<<>>%-3.1p<<\n", NULL, NULL, NULL, NULL, NULL);
-	// printf("\t%d|%d\n", c1, c2);
-
-	// c1 = printf(" >>%23p<<>>%.p<<>>%32p<<>>%5p<<>>%6p<<\n", NULL, NULL, NULL, NULL, NULL);
-	// c2 = ft_printf("*>>%23p<<>>%.p<<>>%32p<<>>%5p<<>>%6p<<\n", NULL, NULL, NULL, NULL, NULL);
-	// printf("\t%d|%d\n", c1, c2);
-
-	// c1 = printf(" >>%.09p<<>>%.9p<<>>%3.6p<<>>%20.6p<<>>%-3.8p<<>>%-10.8p<<\n", NULL, NULL, NULL, NULL, NULL, NULL);
-	// c2 = ft_printf("*>>%.09p<<>>%.9p<<>>%3.6p<<>>%20.6p<<>>%-3.8p<<>>%-10.8p<<\n", NULL, NULL, NULL, NULL, NULL, NULL);
-	// printf("\t%d|%d\n", c1, c2);
+	printf("\n\n. x\n");
+	c1 = printf(">>%.8x>>%.9X>>%.10x>>%.11x>>%.12X>>%.13X>>%.14x\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42);
+	c2 = ft_printf(">>%.8x>>%.9X>>%.10x>>%.11x>>%.12X>>%.13X>>%.14x\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42);
+	printf("\t%d|%d\n", c1, c2);
 
 
-	// char *str = NULL;
-	// int res = write(1, str, sizeof(str));
-	// printf("%d", res);
+	printf("\n\n. s\n");
+	c1 = printf(" %.2s<>%.3s<>%.4s<>%.5s<>%.1s \n", " - ", "", "4", "", "2 ");
+	c2 = ft_printf(" %.2s<>%.3s<>%.4s<>%.5s<>%.1s \n", " - ", "", "4", "", "2 ");
+	printf("\t%d|%d\n", c1, c2);
+
+	c1 = printf(">%.0s>>%.s>>%.2s>>%.5s>>%.10s\n", "hello", "hello", "hello", "hello", "hello");
+	c2 = ft_printf(">%.0s|>>%.s|>>%.2s>>%.5s>>%.10s\n", "hello", "hello", "hello", "hello", "hello");
+	printf("\t%d|%d\n", c1, c2);
+
+	printf("\n\n-\n");
+	c1 = printf(" |<>%-9d|<> %-10d|<> %-11d|<> %-12d|<> %-13d|<> %-14d|<> %-15d|<>\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42);
+	c2 = ft_printf(" |<>%-9d|<> %-10d|<> %-11d|<> %-12d|<> %-13d|<> %-14d|<> %-15d|<>\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42);
+	printf("\t%d|%d\n", c1, c2);
+	c1 = printf(" |<>%-9i|<> %-10i|<> %-11i|<> %-12i|<> %-13i|<> %-14i|<> %-15i|<>\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42);
+	c2 = ft_printf(" |<>%-9i|<> %-10i|<> %-11i|<> %-12i|<> %-13i|<> %-14i|<> %-15i|<>\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42);
+	printf("\t%d|%d\n", c1, c2);
+	c1 = printf(" |<>%-9u|<> %-10u|<> %-11u|<> %-12u|<> %-13u|<> %-14u|<> %-15u|<>\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42);
+	c2 = ft_printf(" |<>%-9u|<> %-10u|<> %-11u|<> %-12u|<> %-13u|<> %-14u|<> %-15u|<>\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42);
+	printf("\t%d|%d\n", c1, c2);
+	c1 = printf(" |<>%-9x|<> %-10x|<> %-11x|<> %-12x|<> %-13x|<> %-14x|<> %-15x|<>\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42);
+	c2 = ft_printf(" |<>%-9x|<> %-10x|<> %-11x|<> %-12x|<> %-13x|<> %-14x|<> %-15x|<>\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42);
+	printf("\t%d|%d\n", c1, c2);
+	c1 = printf(" |<>%-9X|<> %-10X|<> %-11X|<> %-12X|<> %-13X|<> %-14X|<> %-15X|<>\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42);
+	c2 = ft_printf(" |<>%-9X|<> %-10X|<> %-11X|<> %-12X|<> %-13X|<> %-14X|<> %-15X|<>\n", INT_MAX, INT_MIN, LONG_MAX, LONG_MIN, ULONG_MAX, 0, -42);
+	printf("\t%d|%d\n", c1, c2);
+
+
+	printf("\n\nTEST %%\n");
+	c1 = printf(" >>%5%<<>>%-5%<<>>%05%<<>>%010%<<%% %%%% %%%%% %\n");
+	c2 = ft_printf("*>>%5%<<>>%-5%<<>>%05%<<>>%010%<<%% %%%% %%%%% %\n");
+	printf("\t%d|%d\n", c1, c2);
+
+	// test the behaviour with NULL
+	printf("\n\nTEST NULL with s\n");
+	c1 = printf(" >>%.03s<<>>%.3s<<>>%3.1s<<>>%9.1s<<>>%-3.1s<<\n", NULL, NULL, NULL, NULL, NULL);
+	c2 = ft_printf("*>>%.03s<<>>%.3s<<>>%3.1s<<>>%9.1s<<>>%-3.1s<<\n", NULL, NULL, NULL, NULL, NULL);
+	printf("\t%d|%d\n", c1, c2);
+
+	c1 = printf(" >>%23s<<>>%.s<<>>%32s<<>>%5s<<>>%6s<<\n", NULL, NULL, NULL, NULL, NULL);
+	c2 = ft_printf("*>>%23s<<>>%.s<<>>%32s<<>>%5s<<>>%6s<<\n", NULL, NULL, NULL, NULL, NULL);
+	printf("\t%d|%d\n", c1, c2);
+
+	c1 = printf(" >>%.09s<<>>%.9s<<>>%3.6s<<>>%20.6s<<>>%-3.8s<<>>%-10.8s<<\n", NULL, NULL, NULL, NULL, NULL, NULL);
+	c2 = ft_printf("*>>%.09s<<>>%.9s<<>>%3.6s<<>>%20.6s<<>>%-3.8s<<>>%-10.8s<<\n", NULL, NULL, NULL, NULL, NULL, NULL);
+	printf("\t%d|%d\n", c1, c2);
+
+	printf("\n\nTEST NULL with p\n");
+	c1 = printf(" >>%.03p<<>>%.3p<<>>%3.1p<<>>%9.1p<<>>%-3.1p<<\n", NULL, NULL, NULL, NULL, NULL);
+	c2 = ft_printf("*>>%.03p<<>>%.3p<<>>%3.1p<<>>%9.1p<<>>%-3.1p<<\n", NULL, NULL, NULL, NULL, NULL);
+	printf("\t%d|%d\n", c1, c2);
+
+	c1 = printf(" >>%23p<<>>%.p<<>>%32p<<>>%5p<<>>%6p<<\n", NULL, NULL, NULL, NULL, NULL);
+	c2 = ft_printf("*>>%23p<<>>%.p<<>>%32p<<>>%5p<<>>%6p<<\n", NULL, NULL, NULL, NULL, NULL);
+	printf("\t%d|%d\n", c1, c2);
+
+	c1 = printf(" >>%.09p<<>>%.9p<<>>%3.6p<<>>%20.6p<<>>%-3.8p<<>>%-10.8p<<\n", NULL, NULL, NULL, NULL, NULL, NULL);
+	c2 = ft_printf("*>>%.09p<<>>%.9p<<>>%3.6p<<>>%20.6p<<>>%-3.8p<<>>%-10.8p<<\n", NULL, NULL, NULL, NULL, NULL, NULL);
+	printf("\t%d|%d\n", c1, c2);
+
+
 
 	// // test zero precision
 	// c1 = printf(" >>%d<<>>%10d<<>>%10.5d<<>>%10.0d<<>>%10.d<<>>%.0d<<\n", 12, 12, 12, 12, 12, 12);
@@ -320,8 +382,8 @@ int main(void)
 	// c2 = ft_printf("*>>%u<<>>%10u<<>>%10.5u<<>>%10.0u<<>>%10.u<<\n", 0, 0, 0, 0, 0, 0);
 	// printf("\t%d|%d\n", c1, c2);
 
-	test_d();
+	// test_d();
 }
 // gcc *.c ./libft/libft.a && ./a.out
-
  */
+
