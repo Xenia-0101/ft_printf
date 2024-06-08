@@ -6,15 +6,15 @@
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 13:31:52 by xvislock          #+#    #+#             */
-/*   Updated: 2024/06/08 14:07:40 by xvislock         ###   ########.fr       */
+/*   Updated: 2024/06/08 21:49:47 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static void ft_putchar_u(t_mod *mod, unsigned int num)
+static void	ft_putchar_u(t_mod *mod, unsigned int num)
 {
-	char c;
+	char	c;
 
 	if (!(mod->prec.exists && mod->prec.value == 0 && num == 0))
 	{
@@ -33,7 +33,7 @@ static void ft_putchar_u(t_mod *mod, unsigned int num)
 	}
 }
 
-static void the_uff(t_mod *mod, unsigned int num, int prec_c, int padd_c)
+static void	the_uff(t_mod *mod, unsigned int num, int prec_c, int padd_c)
 {
 	if (mod->flag.dash)
 	{
@@ -56,8 +56,7 @@ static void the_uff(t_mod *mod, unsigned int num, int prec_c, int padd_c)
 	}
 }
 
-
-void format_u(t_mod *mod, unsigned int num)
+void	format_u(t_mod *mod, unsigned int num)
 {
 	int	char_count;
 	int	prec_count;
@@ -71,4 +70,3 @@ void format_u(t_mod *mod, unsigned int num)
 	padding_len += (mod->prec.exists && mod->prec.value == 0 && num == 0);
 	the_uff(mod, num, prec_count, padding_len);
 }
-

@@ -6,13 +6,13 @@
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 13:24:53 by xvislock          #+#    #+#             */
-/*   Updated: 2024/06/01 17:17:19 by xvislock         ###   ########.fr       */
+/*   Updated: 2024/06/08 21:54:11 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void pad_space(t_mod *mod, int count, char c)
+void	pad_space(t_mod *mod, int count, char c)
 {
 	while (count-- > 0)
 	{
@@ -20,4 +20,3 @@ void pad_space(t_mod *mod, int count, char c)
 		mod->total++;
 	}
 }
-

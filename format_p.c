@@ -6,7 +6,7 @@
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 15:16:46 by xvislock          #+#    #+#             */
-/*   Updated: 2024/06/08 16:38:55 by xvislock         ###   ########.fr       */
+/*   Updated: 2024/06/08 21:47:46 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ static void	ft_putchar_p(t_mod *mod, unsigned long num)
 	}
 	free(base);
 }
+
 static void	ft_putsign(t_mod *mod)
 {
 	if (mod->flag.plus)
@@ -73,7 +74,7 @@ static void	the_uff(t_mod *mod, unsigned long num, int prec_c, int padd_c)
 	}
 }
 
-static void the_nil_uff(t_mod *mod)
+static void	the_nil_uff(t_mod *mod)
 {
 	if (mod->flag.dash)
 	{
@@ -86,6 +87,7 @@ static void the_nil_uff(t_mod *mod)
 		mod->total += write(1, "(nil)", 5);
 	}
 }
+
 void	format_p(t_mod *mod, unsigned long num)
 {
 	int	char_count;
@@ -98,7 +100,8 @@ void	format_p(t_mod *mod, unsigned long num)
 	}
 	else
 	{
-		char_count = ft_countdigits_p(num) + 2 + (mod->flag.plus | mod->flag.spac);
+		char_count = ft_countdigits_p(num);
+		char_count += 2 + (mod->flag.plus | mod->flag.spac);
 		prec_count = mod->prec.value - char_count;
 		if (prec_count < 0)
 			prec_count = 0;

@@ -6,21 +6,21 @@
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 20:28:29 by xvislock          #+#    #+#             */
-/*   Updated: 2024/06/08 21:40:25 by xvislock         ###   ########.fr       */
+/*   Updated: 2024/06/08 23:29:04 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 #include <string.h>
 
-
-static int is_specifier(char c)
+static int	is_specifier(char c)
 {
-	char	*specs = "cspdiuxX%";
+	char	specs[10];
 	int		i;
 
+	ft_strlcpy(specs, "cspdiuxX%", 10);
 	i = 0;
-	while (i < 9)
+	while (i < ft_strlen(specs))
 	{
 		if (c == specs[i++])
 			return (1);
@@ -28,41 +28,45 @@ static int is_specifier(char c)
 	return (0);
 }
 
-static int is_flag(char c)
+static int	is_flag(char c)
 {
 	return ((c == '-') | (c == '0') | (c == '#')
-			| (c == ' ') | (c == '+'));
+		| (c == ' ') | (c == '+'));
 }
 
-
-static void analyse_mod(t_mod *mod, char *modifier)
+static void	analyse_flag(t_mod *mod, char m)
 {
-	int n;
+	if (m == '0')
+	{
+		mod->flag.zero = 1;
+	}
+	else if (m == '-')
+	{
+		mod->flag.dash = 1;
+		mod->flag.zero = 0;
+	}
+	else if (m == ' ')
+	{
+		mod->flag.spac = 1;
+	}
+	else if (m == '+')
+	{
+		mod->flag.plus = 1;
+	}
+	else if (m == '#')
+	{
+		mod->flag.hash = 1;
+	}
+}
+
+static void	analyse_mod(t_mod *mod, char *modifier)
+{
+	int	n;
 
 	n = 0;
 	while (is_flag(modifier[n]))
 	{
-		if (modifier[n] == '0')
-		{
-			mod->flag.zero = 1;
-		}
-		else if (modifier[n] == '-')
-		{
-			mod->flag.dash = 1;
-			mod->flag.zero = 0;
-		}
-		else if (modifier[n] == ' ')
-		{
-			mod->flag.spac = 1;
-		}
-		else if (modifier[n] == '+')
-		{
-			mod->flag.plus = 1;
-		}
-		else if (modifier[n] == '#')
-		{
-			mod->flag.hash = 1;
-		}
+		analyse_flag(mod, modifier[n]);
 		n++;
 	}
 	if (ft_isdigit(modifier[n]))
@@ -70,9 +74,7 @@ static void analyse_mod(t_mod *mod, char *modifier)
 		(mod->widt.exists) = 1;
 		(mod->widt.value) = ft_atoi(&modifier[n]);
 		while (ft_isdigit(modifier[n]))
-		{
 			n++;
-		}
 	}
 	if (modifier[n] == '.')
 	{
@@ -80,59 +82,44 @@ static void analyse_mod(t_mod *mod, char *modifier)
 		n++;
 		(mod->prec.value) = ft_atoi(&modifier[n]);
 		while (ft_isdigit(modifier[n]))
-		{
 			n++;
-		}
 		mod->flag.zero = 0;
 	}
-	if (!is_specifier(modifier[n]))
-		return;							// what happens if no spec ??
-	else
-	{
-		(mod->spec.exists) = 1;
-		(mod->spec.value) = modifier[n];
-	}
+	(mod->spec.value) = modifier[n];
 }
 
-static void init_mod(t_mod *mod)
+static void	init_mod(t_mod *mod)
 {
 	mod->total = 0;
-
 	mod->flag.dash = 0;
 	mod->flag.zero = 0;
 	mod->flag.spac = 0;
 	mod->flag.plus = 0;
 	mod->flag.hash = 0;
-
 	mod->widt.exists = 0;
 	mod->widt.value = 0;
-
 	mod->prec.exists = 0;
 	mod->prec.value = 0;
-
 	mod->spec.exists = 0;
 	mod->spec.value = 0;
 }
 
-static void restore_mod(t_mod *mod)
+static void	restore_mod(t_mod *mod)
 {
 	mod->flag.dash = 0;
 	mod->flag.zero = 0;
 	mod->flag.spac = 0;
 	mod->flag.plus = 0;
 	mod->flag.hash = 0;
-
 	mod->widt.exists = 0;
 	mod->widt.value = 0;
-
 	mod->prec.exists = 0;
 	mod->prec.value = 0;
-
 	mod->spec.exists = 0;
 	mod->spec.value = 0;
 }
 
-void print_mod(t_mod *mod)
+void	print_mod(t_mod *mod)
 {
 	if (mod->flag.zero)
 		printf("mod->flag.zero: %d\n", mod->flag.zero);
@@ -152,7 +139,7 @@ void print_mod(t_mod *mod)
 		printf("mod->spec.value: %c\n", mod->spec.value);
 }
 
-int record_modifier(t_mod *mod, const char *string)
+int	record_modifier(t_mod *mod, const char *string)
 {
 	int n;
 	char *start;
@@ -172,38 +159,23 @@ int record_modifier(t_mod *mod, const char *string)
 	return (n);
 }
 
-int ft_printf(const char *string, ...)
+int	ft_printf(const char *string, ...)
 {
-	int n;
-	size_t res;
-	va_list vars;
-	t_mod *mod;
-
-	mod = malloc(sizeof (t_mod));
-	if (!mod)
-		return (0);
+	int		n;
+	size_t	res;
+	va_list	vars;
+	t_mod	*mod;
 
 	init_mod(mod);
-
 	va_start(vars, string);
-
 	n = 0;
 	while (string[n])
 	{
 		if (string[n] == '%')
 		{
-			if (string[n + 1] == '%')
-			{
-				write(1, &string[n], 1);
-				mod->total++;
-				n += 2;
-			}
-			else
-			{
-				n += record_modifier(mod, (string + n)) + 1;
-				decide_format(mod, &vars);
-				restore_mod(mod);
-			}
+			n += record_modifier(mod, (string + n)) + 1;
+			decide_format(mod, &vars);
+			restore_mod(mod);
 		}
 		else
 		{
@@ -213,12 +185,13 @@ int ft_printf(const char *string, ...)
 	}
 	va_end(vars);
 	res = mod->total;
-	free(mod);
 	return (res);
 }
-
 /*
 #include <limits.h>
+#include ".tests/test_d.c"
+#include ".tests/test_x.c"
+#include ".tests/test_percent.c"
 
 int main(void)
 {
@@ -306,7 +279,7 @@ int main(void)
 	c2 = ft_printf(" %.2s<>%.3s<>%.4s<>%.5s<>%.1s \n", " - ", "", "4", "", "2 ");
 	printf("\t%d|%d\n", c1, c2);
 
-	c1 = printf(">%.0s>>%.s>>%.2s>>%.5s>>%.10s\n", "hello", "hello", "hello", "hello", "hello");
+	c1 = printf(">%.0s|>>%.s|>>%.2s>>%.5s>>%.10s\n", "hello", "hello", "hello", "hello", "hello");
 	c2 = ft_printf(">%.0s|>>%.s|>>%.2s>>%.5s>>%.10s\n", "hello", "hello", "hello", "hello", "hello");
 	printf("\t%d|%d\n", c1, c2);
 
@@ -359,6 +332,11 @@ int main(void)
 	c1 = printf(" >>%.09p<<>>%.9p<<>>%3.6p<<>>%20.6p<<>>%-3.8p<<>>%-10.8p<<\n", NULL, NULL, NULL, NULL, NULL, NULL);
 	c2 = ft_printf("*>>%.09p<<>>%.9p<<>>%3.6p<<>>%20.6p<<>>%-3.8p<<>>%-10.8p<<\n", NULL, NULL, NULL, NULL, NULL, NULL);
 	printf("\t%d|%d\n", c1, c2);
+
+	test_d();
+	test_x();
+	test_percent();
+
 
 
 

@@ -40,9 +40,15 @@ typedef struct s_format_mod
 	t_switch	spec;
 }				t_mod;
 
+typedef struct s_deff_d
+{
+	int	is_neg;
+	int	prec_c;
+	int	padd_c;
+}		t_deff_d;
+
 int		ft_printf(const char *string, ...);
 void	decide_format(t_mod *mod, va_list *vars);
-void	the_ultimate_padding_function(t_mod *mod, void (*f)(t_mod *, unsigned int), int count, unsigned int num);
 void	pad_space(t_mod *mod, int count, char c);
 
 int		ft_countdigits_d(int n);

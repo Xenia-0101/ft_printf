@@ -6,7 +6,7 @@
 /*   By: xvislock <xvislock@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/01 13:16:16 by xvislock          #+#    #+#             */
-/*   Updated: 2024/06/08 16:21:39 by xvislock         ###   ########.fr       */
+/*   Updated: 2024/06/08 21:48:45 by xvislock         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,19 @@
 
 static void	the_uff(t_mod *mod, char *s, int char_c, int padd_c)
 {
-
-	// take care of non-existent string
-
 	if (mod->flag.dash)
 	{
-			mod->total += write(1, s, char_c);
-			pad_space(mod, padd_c, ' ');
+		mod->total += write(1, s, char_c);
+		pad_space(mod, padd_c, ' ');
 	}
 	else
 	{
 		pad_space(mod, padd_c, ' ');
 		mod->total += write(1, s, char_c);
 	}
-
 }
 
-static void the_null_uff(t_mod *mod)
+static void	the_null_uff(t_mod *mod)
 {
 	if (mod->prec.exists && mod->prec.value < 5)
 	{
